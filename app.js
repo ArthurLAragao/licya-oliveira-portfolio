@@ -146,7 +146,7 @@ const EN = {
   contactLabel:'Contact', contactTitle:'Shall we create something', contactTitleEm:'together?',
   contactLead:'Have a brand, website or content project in mind? Tell me what you’re working on.', contactCta:'Send an email',
   footer:'Design & development · Fortaleza, BR',
-  cue:'Into the forest', versions:'Versions', versionsLabel:'Portfolio versions',
+  cue:'Scroll into the forest', railLabel:'Journey', rail1:'Edge', rail2:'Trail', rail3:'River', rail4:'Path', rail5:'Clearing', versions:'Versions', versionsLabel:'Portfolio versions',
   factPlaceLabel:'Based in', factStudyLabel:'Studies', factStudy:'Systems Analysis · Unichristus', factSinceLabel:'Own projects', factSince:'Since 2025',
   viewsLabel:'Project views', close:'Close project', ctxLabel:'Context', doneLabel:'What was done', itemsLabel:'Deliverables', paletteLabel:'Brand colors',
   otherProjects:'Other projects', prev:'Previous', next:'Next'
@@ -206,13 +206,12 @@ motionBtn.addEventListener('click', () => {
   root.classList.toggle('js-motion', motionOn());
   $$('.reveal').forEach(el => el.classList.add('is-in'));
   updateMotionLabel(); manifestoProgress();
-  motionOn() ? ripple.start() : ripple.stop();
 });
 document.addEventListener('visibilitychange', () => root.classList.toggle('is-hidden-tab', document.hidden));
 
 /* ---------------- cabeçalho ---------------- */
 const topbar = $('.topbar');
-const darkSections = $$('.hero, .work, .contact');
+const darkSections = $$('main > section');
 let lastY = scrollY;
 function onScroll(){
   const y = scrollY;
@@ -231,26 +230,6 @@ const spy = new IntersectionObserver(es => es.forEach(e => {
   navLinks.forEach(a => a.hash === '#' + e.target.id ? a.setAttribute('aria-current','true') : a.removeAttribute('aria-current'));
 }), { rootMargin:'-45% 0px -50% 0px' });
 ['inicio','pratica','trabalhos','sobre','contato'].forEach(id => spy.observe(document.getElementById(id)));
-
-/* ---------------- reflexo na água ---------------- */
-const ripple = (() => {
-  const noise = $('#ripple-noise');
-  let raf = 0, last = 0, visible = true;
-  const loop = now => {
-    raf = requestAnimationFrame(loop);
-    if (now - last < 50) return;          // ~20 fps: calmo e leve
-    last = now;
-    const s = now / 1000;
-    noise.setAttribute('baseFrequency', `${(0.006 + Math.sin(s * .35) * .0015).toFixed(4)} ${(0.085 + Math.sin(s * .6) * .012).toFixed(4)}`);
-  };
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? api.start() : api.stop(); }).observe($('.water'));
-  const api = {
-    start(){ if (!raf && motionOn() && visible && !document.hidden) raf = requestAnimationFrame(loop); },
-    stop(){ cancelAnimationFrame(raf); raf = 0; }
-  };
-  document.addEventListener('visibilitychange', () => document.hidden ? api.stop() : api.start());
-  return api;
-})();
 
 /* ---------------- manifesto: as palavras acendem com a rolagem ---------------- */
 const manifesto = $('.manifesto-text');
@@ -450,6 +429,5 @@ window.LicyaPortfolio = { works, seal, lang: () => lang };
 $('#year').textContent = new Date().getFullYear();
 applyLang();
 onScroll();
-ripple.start();
 route();
 })();
