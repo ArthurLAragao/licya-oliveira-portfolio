@@ -147,6 +147,7 @@ const EN = {
   contactLead:'Have a brand, website or content project in mind? Tell me what you’re working on.', contactCta:'Send an email',
   footer:'Design & development · Fortaleza, BR',
   cue:'Into the forest', versions:'Versions', versionsLabel:'Portfolio versions',
+  factPlaceLabel:'Based in', factStudyLabel:'Studies', factStudy:'Systems Analysis · Unichristus', factSinceLabel:'Own projects', factSince:'Since 2025',
   viewsLabel:'Project views', close:'Close project', ctxLabel:'Context', doneLabel:'What was done', itemsLabel:'Deliverables', paletteLabel:'Brand colors',
   otherProjects:'Other projects', prev:'Previous', next:'Next'
 };

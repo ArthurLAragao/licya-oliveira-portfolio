@@ -56,22 +56,43 @@
         <i class="mist m1"></i>
         <div class="layer l2" data-depth="0.22" data-ridge="2"></div>
         <div class="deer-track">
-          <svg class="deer" viewBox="0 -14 120 114" role="presentation">
-            <g fill="currentColor">
-              <path class="tail" d="M31 41 24 44l5 4Z"/>
-              <g transform="translate(38 54)"><path class="leg a" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
-              <g transform="translate(45 54)"><path class="leg b" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
-              <g transform="translate(79 54)"><path class="leg b" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
-              <g transform="translate(86 54)"><path class="leg a" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
-              <path d="M30 46c-1-10 12-14 28-13 14 0 26-1 32 5 5 6 3 17-6 21-14 3-38 3-46 0-6-2-8-7-8-13Z"/>
-              <g class="head">
-                <path d="M80 42c2-8 6-18 12-26l8-2c-1 8-6 18-8 30Z"/>
-                <path d="M92 10c4-4 11-3 18 3 3 3 1 6-3 6h-8c-4-1-7-4-7-9Z"/>
-                <path d="m94 9-7-6 4 7Z"/>
-                <path d="M96 8c-1-6-3-12-6-18M94 1l-6-3M93-4l3-7M98 7c1-6 4-11 8-16M101 0l5-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              </g>
+          <svg class="deer" viewBox="0 -12 160 142" role="presentation">
+            <defs>
+              <linearGradient id="deer-fur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a7562"/><stop offset=".5" stop-color="#5f4d40"/><stop offset="1" stop-color="#3a2e27"/></linearGradient>
+              <linearGradient id="deer-leg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a4a3e"/><stop offset="1" stop-color="#2c231e"/></linearGradient>
+              <linearGradient id="deer-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#40342c"/><stop offset="1" stop-color="#211a16"/></linearGradient>
+            </defs>
+            <ellipse class="deer-shadow" cx="86" cy="124.5" rx="48" ry="3.4"/>
+            <!-- pernas do lado de lá (mais escuras) -->
+            <g transform="translate(62 75)"><g class="thigh a"><path fill="url(#deer-far)" d="M-5 0C-7 8-5 15-2.5 21.5H2.8C5 14 6.5 7 5.5 0Z"/><g transform="translate(0 21)"><g class="shin a"><path fill="url(#deer-far)" d="M-2.4 0H2.6L2 19.5 3 24.5H-1.6L-1.3 19.5Z"/><path fill="#140f0c" d="M-1.8 23H3.2L3.4 26.5H-2Z"/></g></g></g></g>
+            <g transform="translate(103 76)"><g class="thigh b"><path fill="url(#deer-far)" d="M-3.6 0H3.8L2.8 21.5H-2.4Z"/><g transform="translate(0 21)"><g class="shin b"><path fill="url(#deer-far)" d="M-2.4 0H2.6L2 19.5 3 24.5H-1.6L-1.3 19.5Z"/><path fill="#140f0c" d="M-1.8 23H3.2L3.4 26.5H-2Z"/></g></g></g></g>
+            <g class="torso">
+              <path fill="url(#deer-fur)" d="M44 66C44 54 60 50 80 51c18 1 30-3 38 5 6 7 4 20-4 26-14 6-48 6-62 2-8-3-10-10-8-18Z"/>
+              <path fill="#2f2621" opacity=".55" d="M48 76c12 8 46 9 64 4-4 4-10 6-16 7-16 2-36 1-44-3-3-2-4-5-4-8Z"/>
+              <path fill="#e6dccd" opacity=".75" d="M58 82c14 4 38 4 52 0-6 4-14 6-26 6-12 0-22-2-26-6Z"/>
+              <path d="M58 52c20-2 42-2 59 4" fill="none" stroke="#d9eee9" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
+              <path fill="#3e3029" d="M46 58c-7-3-10 3-7 8 2 0 4-2 6-4Z"/>
+              <path fill="#efe8dc" d="M45 62c-3 1-4 4-3 6 2-1 3-3 4-5Z"/>
             </g>
+            <!-- pernas do lado de cá -->
+            <g transform="translate(56 75)"><g class="thigh b"><path fill="url(#deer-leg)" d="M-5 0C-7 8-5 15-2.5 21.5H2.8C5 14 6.5 7 5.5 0Z"/><g transform="translate(0 21)"><g class="shin b"><path fill="url(#deer-leg)" d="M-2.4 0H2.6L2 19.5 3 24.5H-1.6L-1.3 19.5Z"/><path fill="#140f0c" d="M-1.8 23H3.2L3.4 26.5H-2Z"/></g></g></g></g>
+            <g transform="translate(110 76)"><g class="thigh a"><path fill="url(#deer-leg)" d="M-3.6 0H3.8L2.8 21.5H-2.4Z"/><g transform="translate(0 21)"><g class="shin a"><path fill="url(#deer-leg)" d="M-2.4 0H2.6L2 19.5 3 24.5H-1.6L-1.3 19.5Z"/><path fill="#140f0c" d="M-1.8 23H3.2L3.4 26.5H-2Z"/></g></g></g></g>
+            <!-- pescoço e cabeça (giram a partir do ombro) -->
+            <g transform="translate(112 62)"><g class="head"><g transform="translate(-112 -62)">
+              <path fill="url(#deer-fur)" d="M106 60c2-12 8-24 16-32l12 2c-4 10-10 24-14 40Z"/>
+              <path fill="#e6dccd" opacity=".8" d="M124 40c2 6 0 12-4 16-2-6 0-12 4-16Z"/>
+              <path d="M123 30c3-1 6 0 9 1" fill="none" stroke="#d9eee9" stroke-width="1.2" opacity=".7"/>
+              <path fill="#5f4d40" d="M128 22c-8-8-16-10-20-8 4 6 12 10 20 12Z"/>
+              <path fill="#b8978a" d="M126 22c-6-5-11-7-14-6 3 4 8 7 14 8Z"/>
+              <path fill="url(#deer-fur)" d="M122 30c2-8 10-12 18-10 8 3 16 10 18 16 1 4-3 6-8 5h-10c-8 0-16-3-18-11Z"/>
+              <path fill="#d8cdbc" opacity=".7" d="M146 38c4 1 8 1 11-1 0 2-2 4-6 4h-6Z"/>
+              <circle cx="156.4" cy="36.6" r="2.3" fill="#140f0c"/>
+              <ellipse cx="138" cy="27.5" rx="2.2" ry="2.6" fill="#120e0c"/><circle cx="138.8" cy="26.6" r=".8" fill="#fff"/>
+              <path d="M132 21c-2-10-6-18-12-24M128 10l-8-4M126 4l2-10M136 21c2-10 8-16 14-20M140 12h8M144 6l2-10" fill="none" stroke="#3b3128" stroke-width="3.4" stroke-linecap="round"/>
+              <path d="M132 21c-2-10-6-18-12-24M128 10l-8-4M126 4l2-10M136 21c2-10 8-16 14-20M140 12h8M144 6l2-10" fill="none" stroke="#cdbfa6" stroke-width="2" stroke-linecap="round"/>
+            </g></g></g>
           </svg>
+          <div class="meadow" data-meadow></div>
         </div>
         <i class="mist m2"></i>
         <div class="layer l3" data-depth="0.36" data-ridge="3"></div>
@@ -101,7 +122,7 @@
 
     <!-- Manifesto: a clareira na névoa -->
     <section class="manifesto" id="pratica" aria-labelledby="manifesto-title" data-leaves>
-      <div class="fogline" aria-hidden="true"></div>
+      <div class="fogbank" aria-hidden="true" data-fog="3"></div>
       <h2 id="manifesto-title" class="sr-only" data-i18n="manifestoLabel">O que eu faço</h2>
       <p class="label" aria-hidden="true"><span class="label-dot"></span><span data-i18n="manifestoLabel">O que eu faço</span></p>
       <p class="manifesto-text" data-i18n="manifesto" data-split>Crio identidades visuais, construo sites e cuido do conteúdo que mantém cada marca viva. O mesmo olhar acompanha o negócio do primeiro esboço até o código publicado — com calma, intenção e atenção aos detalhes.</p>
@@ -138,20 +159,43 @@
 
     <!-- Trabalhos: a mata à noite -->
     <section class="work" id="trabalhos" aria-labelledby="work-title" data-swarm>
-      <div class="ridge" aria-hidden="true" data-divider="#0f2f42"></div>
+      <div class="ridges" aria-hidden="true">
+        <div class="ridge r1" data-divider="#a9c9c7" data-lit="#d7ebe8" data-seed="5"></div>
+        <div class="ridge r2" data-divider="#4d7c84" data-lit="#83b3b4" data-seed="6"></div>
+        <div class="ridge r3" data-divider="#0f2f42" data-lit="#2b5a68" data-seed="7"></div>
+      </div>
       <div class="work-glow" aria-hidden="true"></div>
       <canvas class="fireflies" data-count="34" aria-hidden="true"></canvas>
       <div class="owl" aria-hidden="true">
         <svg viewBox="0 0 240 200">
-          <path class="branch" d="M240 120c-40-2-80 4-120 8-30 3-60 12-100 28l-2-4c40-18 74-28 102-31 40-5 80-10 120-11Z"/>
-          <path class="branch" d="M60 142c-6-10-4-22 6-30l2 2c-8 8-9 18-4 27Z"/>
-          <g class="bird-body" fill="currentColor">
-            <path d="M98 126c-6-20-4-52 6-64l-4-16 12 10c4-2 12-2 16 0l12-10-4 16c10 12 12 44 6 64Z"/>
-            <circle class="eye" cx="112" cy="72" r="7"/><circle class="eye" cx="128" cy="72" r="7"/>
-            <circle class="pupil" cx="112" cy="72" r="3.2"/><circle class="pupil" cx="128" cy="72" r="3.2"/>
-            <g class="lids"><ellipse cx="112" cy="72" rx="8" ry="8"/><ellipse cx="128" cy="72" rx="8" ry="8"/></g>
-            <path d="m117 80 3 5 3-5Z" fill="#0d2a38"/>
-          </g>
+          <defs>
+            <linearGradient id="owl-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6e5a4a"/><stop offset="1" stop-color="#2e241e"/></linearGradient>
+            <linearGradient id="owl-belly" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a48f78"/><stop offset="1" stop-color="#5b4a3c"/></linearGradient>
+            <radialGradient id="owl-eye"><stop offset="0" stop-color="#ffe9a6"/><stop offset=".7" stop-color="#f0b84a"/><stop offset="1" stop-color="#a86a1c"/></radialGradient>
+            <linearGradient id="owl-branch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3a2e"/><stop offset="1" stop-color="#1b140f"/></linearGradient>
+            <pattern id="owl-scallop" width="7" height="6" patternUnits="userSpaceOnUse"><path d="M0 4.5q1.75-2.5 3.5 0M3.5 1.5q1.75-2.5 3.5 0" fill="none" stroke="#3a2d24" stroke-width=".7" opacity=".7"/></pattern>
+          </defs>
+          <path fill="url(#owl-branch)" d="M240 117c-40-1-80 5-120 9-30 3-62 13-104 30l-3-6c42-18 76-28 106-31 40-5 80-11 121-12Z"/>
+          <path d="M240 112c-40 1-80 6-120 10-30 3-62 13-102 30" fill="none" stroke="#7da69f" stroke-width="1" opacity=".55"/>
+          <path fill="url(#owl-branch)" d="M58 142c-7-10-6-24 5-32l3 3c-8 8-10 19-5 28Z"/>
+          <path fill="#2f5a4c" d="M150 115c4-6 12-7 16-3-4 4-10 5-16 3ZM176 113c2-6 9-9 14-6-3 5-9 7-14 6ZM70 140c-2-6 2-12 8-12 0 6-3 10-8 12Z"/>
+          <path fill="#4f8a72" d="M150 115c4-3 9-4 13-3M176 113c3-3 7-5 11-5" stroke="#6fa88e" stroke-width=".8" fill="none"/>
+          <g transform="translate(120 124)"><g class="bird-body"><g transform="translate(-120 -124)">
+            <path fill="url(#owl-body)" d="M97 124c-7-22-5-52 6-64l-5-17 14 11c5-2 11-2 16 0l14-11-5 17c11 12 13 42 6 64Z"/>
+            <path fill="url(#owl-belly)" d="M106 122c-4-14-3-30 3-38 7-4 15-4 22 0 6 8 7 24 3 38Z"/>
+            <path fill="url(#owl-scallop)" d="M106 122c-4-14-3-30 3-38 7-4 15-4 22 0 6 8 7 24 3 38Z"/>
+            <path fill="#3b2e25" d="M99 82c-4 14-3 30 2 40l6 2c-6-12-7-28-4-40Z"/>
+            <path fill="#4a3a2f" d="M141 82c4 14 3 30-2 40l-6 2c6-12 7-28 4-40Z"/>
+            <path d="M139 70c4 10 5 24 2 40" fill="none" stroke="#d9eee9" stroke-width="1.3" opacity=".6"/>
+            <circle cx="112" cy="72" r="11" fill="#8c7764"/><circle cx="128" cy="72" r="11" fill="#8c7764"/>
+            <path d="M101 68c5-8 14-9 19-4 5-5 14-4 19 4" fill="none" stroke="#2e241e" stroke-width="2"/>
+            <circle class="eye" cx="112" cy="72" r="7" fill="url(#owl-eye)"/><circle class="eye" cx="128" cy="72" r="7" fill="url(#owl-eye)"/>
+            <circle class="pupil" cx="112" cy="72" r="3.4"/><circle class="pupil" cx="128" cy="72" r="3.4"/>
+            <circle cx="110.6" cy="70" r="1.2" fill="#fff" opacity=".9"/><circle cx="126.6" cy="70" r="1.2" fill="#fff" opacity=".9"/>
+            <g class="lids" fill="#5e4b3d"><ellipse cx="112" cy="72" rx="8" ry="8"/><ellipse cx="128" cy="72" rx="8" ry="8"/></g>
+            <path d="m116.5 80 3.5 6 3.5-6c-2-1.4-5-1.4-7 0Z" fill="#d9a54a"/>
+            <path d="M110 124v4m4-4v4m12-4v4m4-4v4" stroke="#c9a15a" stroke-width="2" stroke-linecap="round"/>
+          </g></g></g>
         </svg>
       </div>
       <div class="work-head">
@@ -182,25 +226,31 @@
 
     <!-- Sobre: a trilha -->
     <section class="about" id="sobre" aria-labelledby="about-title" data-leaves>
-      <div class="fogline" aria-hidden="true"></div>
+      <div class="fogbank" aria-hidden="true" data-fog="4"></div>
       <div class="rings" aria-hidden="true"></div>
-      <div class="about-lead reveal">
-        <p class="label"><span class="label-dot" aria-hidden="true"></span><span data-i18n="aboutLabel">Sobre</span></p>
-        <h2 id="about-title"><span data-i18n="aboutTitle">Design encontra</span> <em data-i18n="aboutTitleEm">desenvolvimento.</em></h2>
-      </div>
-      <div class="about-body">
+      <div class="ferns" aria-hidden="true"><div class="fern-clump left" data-fern="1"></div><div class="fern-clump right" data-fern="2"></div></div>
+      <div class="about-grid">
+        <header class="about-lead reveal">
+          <p class="label"><span class="label-dot" aria-hidden="true"></span><span data-i18n="aboutLabel">Sobre</span></p>
+          <h2 id="about-title"><span data-i18n="aboutTitle">Design encontra</span> <em data-i18n="aboutTitleEm">desenvolvimento.</em></h2>
+        </header>
         <div class="about-text reveal">
           <p class="about-big" data-i18n="aboutBig">Crio identidades e construo sites para negócios. Muitas vezes o trabalho continua nos posts e nos materiais do dia a dia que dão vida à marca.</p>
           <p data-i18n="aboutText">Estudo Análise e Desenvolvimento de Sistemas na Unichristus. Além dos projetos independentes, coordenei projetos técnicos, organizei entregas de conteúdo e apoiei o aprendizado em nuvem em comunidades estudantis.</p>
+          <ul class="facts">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span><small data-i18n="factPlaceLabel">Base</small><b>Fortaleza, Ceará</b></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9 12 4l9 5-9 5Z"/><path d="M7 11.5V16c3 2 7 2 10 0v-4.5"/></svg><span><small data-i18n="factStudyLabel">Formação</small><b data-i18n="factStudy">ADS · Unichristus</b></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20C5 10 11 4 20 3c0 9-6 15-15 17Z"/><path d="M5 20 15 9"/></svg><span><small data-i18n="factSinceLabel">Projetos próprios</small><b data-i18n="factSince">Desde 2025</b></span></li>
+          </ul>
         </div>
-        <div class="path reveal">
+        <div class="path trail reveal">
           <h3 data-i18n="expTitle">Trajetória</h3>
           <ol>
-            <li><b data-i18n="exp1">Projetos independentes</b><span data-i18n="exp1Text">Web, identidade visual e redes sociais</span><time data-i18n="exp1When">Desde 2025</time></li>
-            <li><b>Amazon Web Services</b><span data-i18n="exp2Text">Campus Student Leader</span><time data-i18n="exp2When">Abr–Out 2026</time></li>
-            <li><b>Reis Marcas e Patentes</b><span data-i18n="exp3Text">Supervisora de Tecnologia</span><time data-i18n="exp3When">Jan 2024–Ago 2026</time></li>
-            <li><b>Creative Moon</b><span data-i18n="exp4Text">Social Media</span><time data-i18n="exp4When">Jan–Abr 2026</time></li>
-            <li><b>Infinity School</b><span data-i18n="exp5Text">Programa técnico Full Stack</span><time>2024–2025</time></li>
+            <li><time data-i18n="exp1When">Desde 2025</time><b data-i18n="exp1">Projetos independentes</b><span data-i18n="exp1Text">Web, identidade visual e redes sociais</span></li>
+            <li><time data-i18n="exp2When">Abr–Out 2026</time><b>Amazon Web Services</b><span data-i18n="exp2Text">Campus Student Leader</span></li>
+            <li><time data-i18n="exp3When">Jan 2024–Ago 2026</time><b>Reis Marcas e Patentes</b><span data-i18n="exp3Text">Supervisora de Tecnologia</span></li>
+            <li><time data-i18n="exp4When">Jan–Abr 2026</time><b>Creative Moon</b><span data-i18n="exp4Text">Social Media</span></li>
+            <li><time>2024–2025</time><b>Infinity School</b><span data-i18n="exp5Text">Programa técnico Full Stack</span></li>
           </ol>
         </div>
       </div>
@@ -208,21 +258,35 @@
 
     <!-- Contato: o lago sob a lua -->
     <section class="contact" id="contato" aria-labelledby="contact-title" data-swarm>
-      <div class="ridge" aria-hidden="true" data-divider="#0b2233"></div>
+      <div class="ridge" aria-hidden="true" data-divider="#0b2233" data-lit="#21505f" data-seed="1"></div>
       <div class="lake-scene" aria-hidden="true">
         <i class="c-moon"></i>
         <div class="far-shore" data-shore></div>
         <div class="water"><i class="moon-path"></i><i class="lake-glint a"></i><i class="lake-glint b"></i><i class="lake-glint c"></i></div>
         <div class="fox">
           <svg viewBox="0 0 120 100">
-            <g class="fox-body" fill="currentColor">
-              <path class="fox-tail" d="M40 92c-20 2-34-8-32-22 2-8 10-6 12 2 2 10 12 14 24 14Z"/>
-              <path d="M38 92c-4-16 0-34 12-42 6-4 14-4 18 0 6 8 8 26 4 42Z"/>
-              <path d="M58 50c-2-10 2-20 10-22l6-6 2 8c4 2 8 4 16 8-4 4-12 6-18 8-4 4-10 6-16 4Z"/>
-              <path class="fox-ear" d="M65 31V16l8 11Z"/><path class="fox-ear" d="m71 28 5-13 2 14Z"/>
-              <circle class="fox-eye" cx="77" cy="34" r="1.4"/>
+            <defs>
+              <linearGradient id="fox-fur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8693e"/><stop offset="1" stop-color="#6a3520"/></linearGradient>
+              <linearGradient id="bush" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c4a4c"/><stop offset="1" stop-color="#05141c"/></linearGradient>
+            </defs>
+            <g class="fox-body">
+              <g transform="translate(42 88)"><g class="fox-tail"><g transform="translate(-42 -88)">
+                <path fill="url(#fox-fur)" d="M42 92c-22 3-36-8-34-23 2-9 11-8 13 1 2 11 11 15 23 15Z"/>
+                <path fill="#efe3d2" d="M8 70c0-6 4-9 8-8-3 2-4 6-3 9-2 1-4 0-5-1Z"/>
+              </g></g></g>
+              <path fill="url(#fox-fur)" d="M38 92c-4-16 0-34 12-42 6-4 14-4 18 0 6 8 8 26 4 42Z"/>
+              <path fill="#efe3d2" d="M58 54c6 2 10 10 10 20 0 8-2 14-4 18h-8c2-8 2-18 0-26-1-5 0-9 2-12Z"/>
+              <path d="M66 52c5 8 7 22 4 38" fill="none" stroke="#f4d6b8" stroke-width="1.2" opacity=".7"/>
+              <path fill="#2a1712" d="M44 92c0-6 2-10 5-12l2 12ZM64 92c0-5 1-8 3-10l2 10Z"/>
+              <path fill="url(#fox-fur)" d="M58 50c-2-10 2-20 10-22l6-6 2 8c4 2 8 4 16 8-4 4-12 6-18 8-4 4-10 6-16 4Z"/>
+              <path fill="#efe3d2" d="M70 44c6-1 14-2 20-4-4 4-12 6-18 7Z"/>
+              <path class="fox-ear" fill="#8a4426" d="M65 31V16l8 11Z"/><path class="fox-ear" fill="#9e522e" d="m71 28 5-13 2 14Z"/>
+              <path fill="#2a1712" d="M65 21v-5l3 4ZM75.4 18l.6-3 1 4Z"/>
+              <circle cx="92" cy="40" r="1.6" fill="#1a0f0b"/>
+              <circle class="fox-eye" cx="77" cy="34" r="1.5"/>
             </g>
-            <path d="M0 100c4-14 14-16 20-10 4-10 16-10 20-2 6-10 20-8 22 2 6-6 18-4 22 2 6-6 20-4 26 8Z" fill="#04101a"/>
+            <path fill="url(#bush)" d="M0 100c4-14 14-16 20-10 4-10 16-10 20-2 6-10 20-8 22 2 6-6 18-4 22 2 6-6 20-4 26 8Z"/>
+            <path d="M6 92c4-6 10-7 14-3M28 84c4-4 10-4 12 0M48 84c6-6 12-4 14 2M72 86c4-4 10-3 12 1M94 88c5-3 12-1 14 4" fill="none" stroke="#5f9a94" stroke-width="1" opacity=".55"/>
           </svg>
         </div>
       </div>
@@ -290,6 +354,7 @@
     </div>
   </dialog>
 
+  <div class="grain" aria-hidden="true"></div>
   <canvas class="life" aria-hidden="true"></canvas>
   <script src="app.js" defer></script>
   <script src="forest.js" defer></script>
