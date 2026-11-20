@@ -31,6 +31,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const root = document.documentElement;
@@ -923,6 +924,16 @@ const shaftMat = new THREE.ShaderMaterial({
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(VW.w * pr, VW.h * pr, { type:THREE.HalfFloatType, samples:LOW ? 0 : 4 }));
 composer.setPixelRatio(pr); composer.setSize(VW.w, VW.h);
 composer.addPass(new RenderPass(scene, camera));
+// filtro de segurança: um único pixel NaN/infinito (comum em GPUs reais, raro no software)
+// entraria no bloom e se espalharia pela tela inteira = flash preto. Aqui ele vira zero.
+composer.addPass(new ShaderPass({
+  uniforms:{ tDiffuse:{ value:null } },
+  vertexShader:'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
+  fragmentShader:`uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main(){ vec4 c = texture2D(tDiffuse, vUv);
+      if (any(isnan(c)) || any(isinf(c))) c = vec4(0., 0., 0., 1.);
+      gl_FragColor = vec4(clamp(c.rgb, 0., 64.), 1.); }`
+}));
 const bloom = new UnrealBloomPass(new THREE.Vector2(VW.w / 2, VW.h / 2), LOW ? .55 : .7, .6, .78);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
@@ -1158,5 +1169,5 @@ const debug = { s:null, onFrame:null,
   }
 }
 requestAnimationFrame(frame);
-window.LicyaWorld = { scene, camera, renderer, trailLen, S, debug, get s(){ return sNow; } };
+window.LicyaWorld = { scene, camera, renderer, composer, trailLen, S, debug, get s(){ return sNow; } };
 }
