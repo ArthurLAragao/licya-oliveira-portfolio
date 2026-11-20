@@ -19,7 +19,13 @@
 
    Movimento reduzido: sem caminhada nem vento — a câmera salta para a parada
    da seção e o quadro só é redesenhado quando a rolagem muda de parada.
-   Sem WebGL: fica o pôster em CSS e todo o conteúdo funciona igual. */
+   Sem WebGL: fica o pôster em CSS e todo o conteúdo funciona igual.
+
+   Sem quadro preto: o canvas nunca é redimensionado sem ser redesenhado no
+   mesmo instante (resolução adaptativa decide antes do desenho; resize
+   desenha na hora; altura em 100lvh no celular), normais inválidas são
+   saneadas (NaN viraria mancha preta no bloom) e, se a GPU derrubar o
+   contexto, volta o pôster até ele ser restaurado. */
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -155,8 +161,12 @@ function height(x, z){
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:false, powerPreference:'high-performance', stencil:false });
 const MAX_PR = LOW ? 1 : Math.min(devicePixelRatio || 1, 1.5);
 let pr = MAX_PR;
+// o canvas mede a janela "grande" (100lvh): a barra do navegador no celular não força redimensionar
+const view = () => ({ w:Math.max(1, canvas.clientWidth || innerWidth), h:Math.max(1, canvas.clientHeight || innerHeight) });
+let VW = view();
 renderer.setPixelRatio(pr);
-renderer.setSize(innerWidth, innerHeight, false);
+renderer.setSize(VW.w, VW.h, false);
+renderer.setClearColor('#163f4a', 1);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.08;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -167,8 +177,8 @@ const scene = new THREE.Scene();
 const FOG = new THREE.Color('#215866');
 const FOG_DENSITY = .019;
 scene.fog = new THREE.FogExp2(FOG, FOG_DENSITY);
-const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, .1, 900);
-const fovFor = () => innerWidth / innerHeight < .8 ? 64 : innerWidth / innerHeight < 1.2 ? 56 : 46;
+const camera = new THREE.PerspectiveCamera(50, VW.w / VW.h, .1, 900);
+const fovFor = () => VW.w / VW.h < .8 ? 64 : VW.w / VW.h < 1.2 ? 56 : 46;
 camera.fov = fovFor(); camera.updateProjectionMatrix();
 
 const U = { uTime:{ value:0 } };          // tempo compartilhado (vento, água, vaga-lumes)
@@ -198,18 +208,98 @@ const R0 = rng(42);
 const mossTex = canvasTex(256, 256, (g, w, h) => {
   g.fillStyle = '#c9d6cf'; g.fillRect(0, 0, w, h);
   for (let i = 0; i < 2600; i++) { const v = 150 + R0() * 100 | 0; g.fillStyle = `rgba(${v - 40},${v},${v - 20},${.25 + R0() * .35})`; const s = 1 + R0() * 3; g.fillRect(R0() * w, R0() * h, s, s); }
-  for (let i = 0; i < 90; i++) { g.fillStyle = `rgba(40,70,60,${.15 + R0() * .2})`; g.beginPath(); g.arc(R0() * w, R0() * h, 4 + R0() * 12, 0, 7); g.fill(); }
+  for (let i = 0; i < 70; i++) { const x = R0() * w, y = R0() * h, r = 10 + R0() * 26, gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(40,70,60,${.08 + R0() * .1})`); gr.addColorStop(1, 'rgba(40,70,60,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+  for (let i = 0; i < 900; i++) { const x = R0() * w, y = R0() * h, a = R0() * 6.3, l = 2 + R0() * 4; g.strokeStyle = `rgba(${150 + R0() * 40 | 0},${120 + R0() * 30 | 0},${90 + R0() * 20 | 0},${.25 + R0() * .3})`; g.lineWidth = .6; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }
+  for (let i = 0; i < 160; i++) { g.fillStyle = `rgba(${210 + R0() * 40 | 0},${225 + R0() * 30 | 0},${200 + R0() * 30 | 0},${.35 + R0() * .3})`; g.beginPath(); g.ellipse(R0() * w, R0() * h, 1 + R0() * 1.6, .6 + R0(), R0() * 3, 0, 7); g.fill(); }
 }, 90);
-// terra da trilha: base marrom, cascalho, raízes e bordas que somem no musgo
+// terra da trilha: terra batida, sulcos de pisada, cascalho, agulhas caídas, raízes e franja de musgo
+const TAU = Math.PI * 2;
 const dirtTex = canvasTex(256, 1024, (g, w, h) => {
-  const grd = g.createLinearGradient(0, 0, w, 0);
-  grd.addColorStop(0, 'rgba(120,96,70,0)'); grd.addColorStop(.14, 'rgba(120,96,70,.85)'); grd.addColorStop(.3, 'rgba(150,122,92,1)');
-  grd.addColorStop(.7, 'rgba(150,122,92,1)'); grd.addColorStop(.86, 'rgba(120,96,70,.85)'); grd.addColorStop(1, 'rgba(120,96,70,0)');
-  g.fillStyle = grd; g.fillRect(0, 0, w, h);
-  g.globalCompositeOperation = 'source-atop';
-  for (let i = 0; i < 4200; i++) { const v = R0(); g.fillStyle = v < .5 ? `rgba(70,52,38,${.2 + R0() * .35})` : `rgba(205,180,145,${.18 + R0() * .3})`; const s = 1 + R0() * 3.5; g.beginPath(); g.ellipse(R0() * w, R0() * h, s, s * .7, R0() * 3, 0, 7); g.fill(); }
-  for (let i = 0; i < 26; i++) { g.strokeStyle = `rgba(60,42,30,${.35 + R0() * .3})`; g.lineWidth = 2 + R0() * 4; g.beginPath(); const y = R0() * h; g.moveTo(-10, y); g.bezierCurveTo(w * .3, y + (R0() - .5) * 60, w * .7, y + (R0() - .5) * 60, w + 10, y + (R0() - .5) * 40); g.stroke(); }
-  for (let i = 0; i < 24; i++) { g.fillStyle = `rgba(60,90,70,${.3 + R0() * .3})`; g.beginPath(); g.arc(R0() < .5 ? R0() * w * .2 : w - R0() * w * .2, R0() * h, 6 + R0() * 14, 0, 7); g.fill(); }
+  g.fillStyle = 'rgb(122,98,74)'; g.fillRect(0, 0, w, h);
+  const blot = (x, y, r, col) => { g.save(); g.translate(x, y); g.scale(.55, 1.8); const gr = g.createRadialGradient(0, 0, 0, 0, 0, r); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(-r, -r, r * 2, r * 2); g.restore(); };
+  for (let i = 0; i < 320; i++) { const x = R0() * w, y = R0() * h, r = 18 + R0() * 60; const col = R0() < .5 ? 'rgba(78,58,42,.16)' : 'rgba(168,140,106,.12)'; blot(x, y, r, col); blot(x, y + h * (y < h / 2 ? 1 : -1), r, col); }
+  for (const cx of [.37, .63]) { const gr = g.createLinearGradient(w * (cx - .13), 0, w * (cx + .13), 0); gr.addColorStop(0, 'rgba(66,48,34,0)'); gr.addColorStop(.5, 'rgba(66,48,34,.42)'); gr.addColorStop(1, 'rgba(66,48,34,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h); }
+  for (let i = 0; i < 30000; i++) { const v = R0(); g.fillStyle = v < .5 ? `rgba(58,42,30,${.14 + R0() * .3})` : `rgba(200,176,140,${.1 + R0() * .22})`; g.fillRect(R0() * w, R0() * h, 1 + R0() * 1.3, 1 + R0() * 1.3); }
+  const wrapY = (y, r, fn) => { fn(y); if (y < r) fn(y + h); if (y > h - r) fn(y - h); };
+  for (let i = 0; i < 900; i++) {
+    const x = R0() * w, y0 = R0() * h, sz = 1 + Math.pow(R0(), 2.6) * 3.6, a = R0() * 3, l = 104 + R0() * 50 | 0, al = .55 + R0() * .35;
+    wrapY(y0, 10, y => {
+      g.fillStyle = 'rgba(40,30,24,.5)'; g.beginPath(); g.ellipse(x + .8, y + .9, sz, sz * .72, a, 0, TAU); g.fill();
+      g.fillStyle = `rgba(${l},${l - 10},${l - 26},${al})`; g.beginPath(); g.ellipse(x, y, sz, sz * .72, a, 0, TAU); g.fill();
+    });
+  }
+  for (let i = 0; i < 1900; i++) { const x = R0() * w, y0 = R0() * h, a = R0() * TAU, l = 4 + R0() * 9; g.strokeStyle = `rgba(${108 + R0() * 44 | 0},${62 + R0() * 28 | 0},${36 + R0() * 16 | 0},${.3 + R0() * .35})`; g.lineWidth = .7 + R0() * .5;
+    wrapY(y0, 14, y => { g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }); }
+  for (let i = 0; i < 120; i++) { const x = R0() * w, y = 14 + R0() * (h - 28), a = R0() * TAU, l = 5 + R0() * 6; g.save(); g.translate(x, y); g.rotate(a);
+    g.fillStyle = `rgba(${130 + R0() * 50 | 0},${84 + R0() * 30 | 0},${48 + R0() * 20 | 0},.75)`; g.beginPath(); g.ellipse(0, 0, l, l * .42, 0, 0, TAU); g.fill();
+    g.strokeStyle = 'rgba(60,40,26,.6)'; g.lineWidth = .6; g.beginPath(); g.moveTo(-l, 0); g.lineTo(l, 0); g.stroke(); g.restore(); }
+  for (let i = 0; i < 7; i++) {
+    const y = 60 + R0() * (h - 120), dy = (R0() - .5) * 70;
+    g.lineCap = 'round';
+    g.strokeStyle = 'rgba(52,36,26,.75)'; g.lineWidth = 3 + R0() * 4; g.beginPath(); g.moveTo(-10, y); g.bezierCurveTo(w * .3, y + dy, w * .6, y - dy * .5, w + 10, y + dy * .4); g.stroke();
+    g.strokeStyle = 'rgba(170,140,108,.35)'; g.lineWidth = 1; g.beginPath(); g.moveTo(-10, y - 1.5); g.bezierCurveTo(w * .3, y + dy - 1.5, w * .6, y - dy * .5 - 1.5, w + 10, y + dy * .4 - 1.5); g.stroke();
+  }
+  for (let i = 0; i < 520; i++) { const side = R0() < .5, x = side ? Math.pow(R0(), 2) * w * .22 : w - Math.pow(R0(), 2) * w * .22, y = R0() * h;
+    g.fillStyle = `rgba(${48 + R0() * 30 | 0},${84 + R0() * 40 | 0},${62 + R0() * 26 | 0},${.45 + R0() * .4})`; g.beginPath(); g.arc(x, y, 1.5 + R0() * 4, 0, TAU); g.fill(); }
+  // franja irregular (repete na vertical sem emenda)
+  const mc = document.createElement('canvas'); mc.width = w; mc.height = h; const mg = mc.getContext('2d');
+  for (let y = 0; y < h; y += 2) {
+    const k = y / h * TAU, e1 = .13 + .06 * Math.sin(k * 3 + 1) + .04 * Math.sin(k * 13 + 2) + .02 * Math.sin(k * 37), e2 = .13 + .06 * Math.sin(k * 4 + 3) + .04 * Math.sin(k * 11) + .02 * Math.sin(k * 41 + 1);
+    const gr = g.createLinearGradient(0, 0, w, 0);
+    gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(e1 * .5, 'rgba(0,0,0,.25)'); gr.addColorStop(e1, 'rgba(0,0,0,.7)'); gr.addColorStop(e1 + .12, 'rgba(0,0,0,1)');
+    gr.addColorStop(1 - e2 - .12, 'rgba(0,0,0,1)'); gr.addColorStop(1 - e2, 'rgba(0,0,0,.7)'); gr.addColorStop(1 - e2 * .5, 'rgba(0,0,0,.25)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    mg.fillStyle = gr; mg.fillRect(0, y, w, 2);
+  }
+  g.globalCompositeOperation = 'destination-in'; g.drawImage(mc, 0, 0); g.globalCompositeOperation = 'source-over';
+});
+// atlas das plantas: a faixa inferior é sólida (tronco/miolo), o resto é a folhagem recortada
+const SOLID_V = .03, CARD_V0 = .12;
+function plantTex(paint){
+  const t = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#fff'; g.fillRect(0, h - 18, w, 18); g.save(); g.beginPath(); g.rect(0, 0, w, h - 26); g.clip(); paint(g, w, h - 26); g.restore(); });
+  t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; return t;
+}
+// ramo de pinheiro: haste com agulhas inclinadas para a ponta e raminhos laterais
+const sprigTex = plantTex((g, w, h) => {
+  const cy = h / 2, needle = (x, y, ang, len, lw) => { const l = 120 + R0() * 80 | 0; g.strokeStyle = `rgb(${l * .55 | 0},${l},${l * .78 | 0})`; g.lineWidth = lw; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(ang) * len, y + Math.sin(ang) * len); g.stroke(); };
+  g.lineCap = 'round';
+  const env = t => Math.min(1, t * 6) * (1 - Math.pow(t, 2.2) * .82);
+  // raminhos laterais
+  for (let i = 0; i < 9; i++) {
+    const x0 = 20 + i * 24 + R0() * 10, side = i % 2 ? 1 : -1, ang = side * (.6 + R0() * .3), L = (90 - i * 7) * env(x0 / w);
+    for (let k = 0; k < L; k += 2.2) { const x = x0 + Math.cos(ang) * k, y = cy + Math.sin(ang) * k, e = 1 - k / L;
+      for (const sd of [-1, 1]) needle(x, y, ang + sd * (.95 + R0() * .3), (10 + R0() * 6) * (.4 + e * .6), 1.3); }
+  }
+  // agulhas da haste principal
+  for (let x = 2; x < w - 4; x += 1.6) { const t = x / w, e = env(t);
+    for (const sd of [-1, 1]) needle(x, cy + (R0() - .5) * 3, sd * (.75 + R0() * .35), (22 + R0() * 16) * e, 1.5); }
+  g.strokeStyle = 'rgb(120,104,80)'; g.lineWidth = 2.4; g.beginPath(); g.moveTo(0, cy); g.lineTo(w - 6, cy); g.stroke();
+});
+// cacho de folhas para as árvores largas e arbustos
+const leafTex = plantTex((g, w, h) => {
+  const cx = w / 2, cy = h / 2;
+  for (let i = 0; i < 150; i++) {
+    const r = Math.sqrt(R0()) * w * .44, a = R0() * TAU, x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r * .92, L = 9 + R0() * 9;
+    const l = 150 + R0() * 100 | 0;
+    g.save(); g.translate(x, y); g.rotate(a + (R0() - .5) * 1.2);
+    g.fillStyle = `rgb(${l - 50 | 0},${l},${l - 40 | 0})`; g.beginPath(); g.ellipse(L * .5, 0, L, L * .45, 0, 0, TAU); g.fill();
+    g.strokeStyle = 'rgba(70,90,70,.55)'; g.lineWidth = .8; g.beginPath(); g.moveTo(-L * .4, 0); g.lineTo(L * 1.4, 0); g.stroke();
+    g.restore();
+  }
+});
+// fronde de samambaia: ráquis com folíolos que diminuem até a ponta
+const fernTex = plantTex((g, w, h) => {
+  const cy = h / 2; g.lineCap = 'round';
+  for (let x = 6; x < w - 6; x += 5.5) {
+    const t = x / w, e = Math.sin(Math.min(1, t * 1.1) * Math.PI * .92 + .15) * (1 - t * .55);
+    for (const sd of [-1, 1]) {
+      const L = (h * .44) * e * (.9 + R0() * .15), a = sd * (1.12 - t * .3), l = 150 + R0() * 80 | 0;
+      g.save(); g.translate(x, cy); g.rotate(a);
+      g.fillStyle = `rgb(${l - 60 | 0},${l},${l - 50 | 0})`;
+      for (let k = 0; k < L; k += 4.2) { const q = 1 - k / L; g.beginPath(); g.ellipse(k + 2, 0, 3.2, 2.6 * q + 1, 0, 0, TAU); g.fill(); }
+      g.restore();
+    }
+  }
+  g.strokeStyle = 'rgb(110,140,96)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, cy); g.lineTo(w - 4, cy); g.stroke();
 });
 dirtTex.wrapT = THREE.RepeatWrapping;
 const glowTex = canvasTex(128, 128, (g, w) => {
@@ -298,13 +388,18 @@ function ribbon(points, half, lift, mat, vScale){
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
   g.setIndex(idx); g.computeVertexNormals();
+  // a face precisa olhar para cima (vista de cima, uma face invertida é descartada e a trilha some)
+  if (g.attributes.normal.getY(0) < 0) {
+    for (let i = 0; i < idx.length; i += 3) { const t = idx[i + 1]; idx[i + 1] = idx[i + 2]; idx[i + 2] = t; }
+    g.setIndex(idx); g.computeVertexNormals();
+  }
   const m = new THREE.Mesh(g, mat); m.receiveShadow = true; return m;
 }
-const dirtMat = new THREE.MeshStandardMaterial({ map:dirtTex, transparent:true, roughness:.92, depthWrite:false, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-2 });
+const dirtMat = new THREE.MeshStandardMaterial({ map:dirtTex, bumpMap:dirtTex, bumpScale:3.2, color:new THREE.Color(1.3, 1.08, .84), transparent:true, roughness:.92, depthWrite:false, polygonOffset:true, polygonOffsetFactor:-6, polygonOffsetUnits:-24 });
 {
   // a fita é interrompida onde a trilha cruza a água (ali há pedras)
   let run = [];
-  const flush = () => { if (run.length > 3) scene.add(ribbon(run, 1.25, .05, dirtMat, 9)); run = []; };
+  const flush = () => { if (run.length > 3) scene.add(ribbon(run, 1.45, .1, dirtMat, 9)); run = []; };
   trailPts.forEach(p => { if (riverDist(p.x, p.z) < RIVER_HALF + .6) flush(); else run.push(p); });
   flush();
 }
@@ -389,38 +484,52 @@ function softNormals(geo, center, k){
 const strip = g => { g.deleteAttribute('uv'); return g.index ? g.toNonIndexed() : g; };
 // esfera com vértices soldados: o relevo deforma sem rachar e a luz desliza macia
 const blob = (r, detail) => { const g = new THREE.IcosahedronGeometry(r, detail); g.deleteAttribute('uv'); g.deleteAttribute('normal'); return mergeVertices(g); };
+// uma "carta" de folhagem: faixa ao longo de x (0→len), largura em z, com curvatura e torção
+function card(len, wid, seg, roll, shapeY){
+  const pos = [], uv = [], idx = [];
+  for (let i = 0; i <= seg; i++) {
+    const t = i / seg, x = t * len, y = shapeY ? shapeY(t) : 0;
+    for (let j = 0; j < 2; j++) {
+      const v = j ? 1 : -1, z = v * wid / 2, cr = Math.cos(roll), sr = Math.sin(roll);
+      pos.push(x, y + z * sr, z * cr); uv.push(t, CARD_V0 + (j ? 1 : 0) * (1 - CARD_V0 - .01));
+    }
+    if (i) { const k = i * 2; idx.push(k - 2, k - 1, k, k - 1, k + 1, k); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(new Float32Array(pos.length), 3)); g.setIndex(idx);
+  return g;
+}
+const solidUV = g => { const u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, .5, SOLID_V); return g; };
+// normal "de copa": aponta para fora do eixo da árvore e um pouco para cima — luz macia e volumosa
+function crownNormals(g, cx, cy, cz, up){
+  const p = g.attributes.position, n = g.attributes.normal, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.set(p.getX(i) - cx, (p.getY(i) - cy) * .6 + up, p.getZ(i) - cz).normalize(); n.setXYZ(i, v.x, v.y, v.z); }
+}
 function pineGeo(tiers, radial, R){
   const parts = [];
-  const trunk = strip(new THREE.CylinderGeometry(.018, .038, .4, 6, 1, true)); trunk.translate(0, .2, 0);
-  trunk.computeVertexNormals();
-  paint(trunk, c => c.set('#3a2a1f'));
-  parts.push(trunk);
-  const dark = new THREE.Color('#0b2422'), mid = new THREE.Color('#1b4640'), tip = new THREE.Color('#4f8a76'), c0 = new THREE.Color();
-  // núcleo: um cone fino que fecha o miolo da árvore e forma a ponta
-  const core = strip(new THREE.ConeGeometry(.07, .82, 7, 1, true)); core.translate(0, .59, 0); core.computeVertexNormals();
-  paint(core, (c, x, y) => c.copy(dark).lerp(mid, clamp((y - .2) / .8) * .7)); parts.push(core);
-  // galhos: cada andar tem uma coroa de ramos que saem do tronco e pendem na ponta
+  const dark = new THREE.Color('#0a221e'), mid = new THREE.Color('#1f4d41'), tip = new THREE.Color('#4f8a70'), moonlit = new THREE.Color('#86bba6');
+  const trunk = new THREE.CylinderGeometry(.014, .042, .66, 7, 3, true); trunk.translate(0, .33, 0); trunk.computeVertexNormals(); solidUV(trunk);
+  paint(trunk, (c, x, y, z) => c.set('#3b2a1f').lerp(new THREE.Color('#6b5443'), clamp(N1(y * 40, Math.atan2(z, x) * 2) * .8 + .3))); parts.push(trunk);
+  // miolo escuro: fecha a silhueta e dá profundidade entre os galhos
+  const core = new THREE.ConeGeometry(.06, .7, 8, 1, true); core.translate(0, .52, 0); core.computeVertexNormals(); solidUV(core);
+  paint(core, (c, x, y) => c.copy(dark).lerp(mid, clamp((y - .2) / .8) * .45)); parts.push(core);
   for (let k = 0; k < tiers; k++) {
-    const f = k / (tiers - 1), y0 = .2 + f * .72, L = (.27 * (1 - f * .82) + .03) * (.9 + R() * .2);
-    const n = Math.max(5, Math.round(radial * (1 - f * .45))), off = R() * 6.3;
+    const f = k / (tiers - 1), y0 = .15 + f * .78, L = (.25 * (1 - f * .84) + .05) * (.9 + R() * .2);
+    const n = Math.max(5, Math.round(radial * (1 - f * .4))), off = R() * TAU;
     for (let j = 0; j < n; j++) {
-      const a = off + j / n * Math.PI * 2 + (R() - .5) * .5, len = L * (.8 + R() * .35), droop = .32 + f * .15 + R() * .2;
-      const b = strip(new THREE.ConeGeometry(len * .36, len, 5, 2, false));
-      b.rotateZ(-Math.PI / 2); b.translate(len / 2, 0, 0);
-      const p = b.attributes.position;
-      for (let i = 0; i < p.count; i++) {
-        const x = p.getX(i), t = x / len;
-        // ramo achatado, mais largo no meio, a ponta cai como um galho com peso
-        p.setXYZ(i, x, p.getY(i) * .42 - t * t * len * .38, p.getZ(i) * (1.15 - t * .4));
+      const a = off + j / n * TAU + (R() - .5) * .55, len = L * (.78 + R() * .38), droop = .3 + f * .1 + R() * .18;
+      for (const roll of [.62, -.62]) {
+        const b = card(len, len * .66, 3, roll + (R() - .5) * .35, t => .02 * t - t * t * droop * len);
+        b.rotateZ(.16 - f * .08 + (R() - .5) * .1); b.rotateY(a); b.translate(0, y0, 0);
+        crownNormals(b, 0, y0 - .06, 0, .22);
+        const bright = .85 + R() * .3;
+        paint(b, (c, x, y, z) => {
+          const r = clamp(Math.hypot(x, z) / (L * 1.05));
+          c.copy(dark).lerp(mid, Math.min(1, r * 1.2)).lerp(tip, Math.pow(r, 2.2) * (.4 + f * .3)).lerp(moonlit, f * f * .1).multiplyScalar(bright);
+        });
+        parts.push(b);
       }
-      b.rotateZ(-droop * .35); b.rotateY(a); b.translate(0, y0 + len * .1, 0);
-      b.computeVertexNormals();
-      softNormals(b, new THREE.Vector3(0, y0 - .05, 0), .6);
-      paint(b, (c, x, y, z) => {
-        const r = clamp(Math.hypot(x, z) / (L * 1.1));
-        c.copy(dark).lerp(mid, r * .9).lerp(tip, Math.pow(r, 2.4) * (.5 + f * .3));
-      });
-      parts.push(b);
     }
   }
   const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
@@ -441,35 +550,60 @@ function farPineGeo(R){
   }
   const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
 }
+// copa de folhas: miolo escuro + dezenas de cachos (cartas) espalhados na superfície de cada volume
+function crownCards(parts, blobs, R, density, dark, light, cy){
+  const q = new THREE.Quaternion(), zAxis = new THREE.Vector3(0, 0, 1), d = new THREE.Vector3(), tw = new THREE.Quaternion();
+  blobs.forEach(([bx, by, bz, br]) => {
+    const fill = new THREE.SphereGeometry(br * .78, 9, 7); fill.translate(bx, by, bz); solidUV(fill);
+    crownNormals(fill, 0, cy, 0, .3); paint(fill, c => c.copy(dark)); parts.push(fill);
+    const count = Math.round(br * density);
+    for (let i = 0; i < count; i++) {
+      d.set(R() * 2 - 1, R() * 1.6 - .5, R() * 2 - 1).normalize();
+      const sz = br * (.75 + R() * .45), r = br * (.72 + R() * .32);
+      const c = new THREE.PlaneGeometry(sz, sz); const uv = c.attributes.uv;
+      for (let k = 0; k < uv.count; k++) uv.setY(k, CARD_V0 + uv.getY(k) * (1 - CARD_V0 - .01));
+      q.setFromUnitVectors(zAxis, d); tw.setFromAxisAngle(d, R() * TAU); q.premultiply(tw);
+      c.applyQuaternion(q); c.translate(bx + d.x * r, by + d.y * r * .85, bz + d.z * r);
+      crownNormals(c, 0, cy, 0, .3);
+      const shade = clamp(.35 + d.y * .45 + (R() - .5) * .3);
+      paint(c, (col, x, y) => col.copy(dark).lerp(light, clamp(shade + (y - by) / br * .25)));
+      parts.push(c);
+    }
+  });
+}
 function leafyGeo(R){
   const parts = [];
-  const trunk = strip(new THREE.CylinderGeometry(.03, .06, .5, 6, 1, true)); trunk.translate(0, .25, 0); trunk.computeVertexNormals();
-  paint(trunk, c => c.set('#3d2c22')); parts.push(trunk);
-  const blobs = [[0, .62, 0, .26], [.15, .52, .06, .19], [-.14, .54, -.05, .2], [.04, .78, -.04, .19], [-.06, .48, .14, .17], [.08, .5, -.15, .16]];
-  blobs.forEach(([bx, by, bz, br]) => {
-    let g = blob(br, 2); const p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i), y = p.getY(i), z = p.getZ(i), d = 1 + .2 * N1(x * 9 + bx * 20, z * 9 + y * 7) + .06 * N2(x * 30, z * 30 + y * 20);
-      p.setXYZ(i, x * d + bx, y * d * .85 + by, z * d + bz);
-    }
-    g.computeVertexNormals(); g = g.toNonIndexed(); softNormals(g, new THREE.Vector3(bx, by, bz), .45);
-    paint(g, (c, x, y) => c.set('#1c4a3f').lerp(new THREE.Color('#6aa684'), clamp((y - by + br) / (br * 2)) * .75));
-    parts.push(g);
+  const trunk = new THREE.CylinderGeometry(.026, .07, .62, 7, 2, true); trunk.translate(0, .31, 0); trunk.computeVertexNormals(); solidUV(trunk);
+  paint(trunk, (c, x, y) => c.set('#3d2c22').lerp(new THREE.Color('#5d4838'), clamp(y * 1.4))); parts.push(trunk);
+  // dois galhos que sobem até a copa
+  [[.5, .2], [-.6, 2.4]].forEach(([lean, a]) => {
+    const l = new THREE.CylinderGeometry(.012, .026, .26, 5, 1, true); l.translate(0, .13, 0); l.rotateZ(lean); l.rotateY(a); l.translate(0, .38, 0);
+    l.computeVertexNormals(); solidUV(l); paint(l, c => c.set('#46352a')); parts.push(l);
   });
+  const blobs = [[0, .64, 0, .25], [.16, .54, .07, .19], [-.15, .55, -.05, .2], [.04, .8, -.04, .18], [-.06, .5, .15, .17], [.09, .52, -.16, .16]];
+  crownCards(parts, blobs, R, 120, new THREE.Color('#10342c'), new THREE.Color('#5f9a7c'), .6);
   const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
 }
-function shrubGeo(){
+function shrubGeo(R){
   const parts = [];
-  [[0, .2, 0, .32], [.22, .14, .1, .22], [-.2, .15, -.08, .24]].forEach(([bx, by, bz, br]) => {
-    let g = blob(br, 2); const p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), d = 1 + .22 * N2(x * 11 + bx * 9, z * 11 + y * 5) + .07 * N1(x * 34, z * 34 + y * 20); p.setXYZ(i, x * d + bx, Math.max(0, y * d * .75 + by), z * d + bz); }
-    g.computeVertexNormals(); g = g.toNonIndexed(); softNormals(g, new THREE.Vector3(bx, by, bz), .4);
-    paint(g, (c, x, y) => c.set('#143c34').lerp(new THREE.Color('#4f8a6a'), clamp(y / .5) * .8)); parts.push(g);
-  });
-  return mergeGeometries(parts);
+  crownCards(parts, [[0, .22, 0, .3], [.22, .16, .1, .21], [-.2, .17, -.08, .23]], R, 80, new THREE.Color('#0f332b'), new THREE.Color('#5f9c78'), .1);
+  const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
+}
+// samambaia: frondes em arco saindo do centro
+function fernGeo(R){
+  const parts = [], base = new THREE.Color('#1d4a3a'), tip = new THREE.Color('#8cc69e');
+  const n = 8;
+  for (let i = 0; i < n; i++) {
+    const a = i / n * TAU + (R() - .5) * .5, len = .5 + R() * .32, rise = .55 + R() * .35;
+    const fr = card(len, len * .5, 6, (R() - .5) * .3, t => t * len * rise - t * t * len * (rise + .25));
+    fr.rotateY(a); crownNormals(fr, 0, -.4, 0, .9);
+    paint(fr, (c, x, y, z) => c.copy(base).lerp(tip, clamp(Math.hypot(x, z) / len) * .8 + .1));
+    parts.push(fr);
+  }
+  const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
 }
 function grassGeo(R){
-  const verts = [], cols = [], base = new THREE.Color('#1f4a3c'), tip = new THREE.Color('#8fc4a0'), c = new THREE.Color();
+  const verts = [], cols = [], base = new THREE.Color('#1f4637'), tip = new THREE.Color('#62957a'), c = new THREE.Color();
   for (let b = 0; b < 9; b++) {
     const a = R() * Math.PI * 2, ox = Math.cos(a) * .16 * R(), oz = Math.sin(a) * .16 * R(), h = .22 + R() * .26, w = .016 + R() * .01;
     const lean = (R() - .5) * .25, dir = R() * Math.PI, dx = Math.cos(dir), dz = Math.sin(dir);
@@ -498,7 +632,7 @@ function rockGeo(R, flat){
 }
 
 /* ---------------- vento (injetado nos materiais padrão) ---------------- */
-function windy(mat, amount, pivot){
+function windy(mat, amount, pivot, twoSided){
   mat.onBeforeCompile = sh => {
     sh.uniforms.uTime = U.uTime;
     sh.vertexShader = 'uniform float uTime;\n' + sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
@@ -509,28 +643,56 @@ function windy(mat, amount, pivot){
       #endif
       float bh = max(position.y - ${pivot.toFixed(2)}, 0.); bh *= bh;
       float w = sin(uTime * .9 + ip.x * .21 + ip.z * .17) * .6 + sin(uTime * 2.3 + ip.x * .6 + ip.z * .4) * .3;
+      w += sin(uTime * 4.1 + position.x * 9. + position.z * 7. + ip.x) * .12;
       transformed.x += w * bh * ${amount.toFixed(3)}; transformed.z += w * .5 * bh * ${amount.toFixed(3)};`);
+    // cartas de folhagem: a normal de copa vale para as duas faces (sem lado escuro "de papel")
+    if (twoSided) sh.fragmentShader = sh.fragmentShader.replace('#include <normal_fragment_begin>',
+      THREE.ShaderChunk.normal_fragment_begin.replace(/gl_FrontFacing \? 1\.0 : - ?1\.0/, '1.0'));
   };
+  // cada combinação de vento compila o seu programa (senão todas herdariam o primeiro)
+  mat.customProgramCacheKey = () => `wind-${amount}-${pivot}-${twoSided ? 2 : 1}`;
   return mat;
 }
+const cardMat = (map, amount, pivot) => windy(new THREE.MeshStandardMaterial({
+  vertexColors:true, map, alphaTest:.42, alphaToCoverage:!LOW, side:THREE.DoubleSide, roughness:.86, metalness:0 }), amount, pivot, true);
 const foliage = () => windy(new THREE.MeshStandardMaterial({ vertexColors:true, roughness:.88, metalness:0 }), .07, .3);
-const grassMat = windy(new THREE.MeshStandardMaterial({ vertexColors:true, roughness:1, side:THREE.DoubleSide }), .55, 0);
+const grassMat = windy(new THREE.MeshStandardMaterial({ vertexColors:true, roughness:1, side:THREE.DoubleSide }), .55, 0, true);
 
 /* ---------------- povoando a mata ---------------- */
 const R1 = rng(2026);
 const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), ps = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
-function instanced(geo, mat, list, { cast = false, receive = true } = {}){
-  const mesh = new THREE.InstancedMesh(geo, mat, list.length);
-  const tint = new THREE.Color();
-  list.forEach((t, i) => {
-    q.setFromAxisAngle(up, t.rot); sc.set(t.s * (t.sx || 1), t.s * (t.sy || 1), t.s * (t.sz || t.sx || 1)); ps.set(t.x, t.y, t.z);
-    m4.compose(ps, q, sc); mesh.setMatrixAt(i, m4);
-    tint.setScalar(t.tint || 1); mesh.setColorAt(i, tint);
-  });
-  mesh.castShadow = cast; mesh.receiveShadow = receive; mesh.frustumCulled = false;
-  scene.add(mesh); return mesh;
+function sane(geo){
+  const n = geo.attributes.normal, p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) if (!Number.isFinite(p.getX(i) + p.getY(i) + p.getZ(i))) p.setXYZ(i, 0, 0, 0);
+  if (!n) return geo;
+  for (let i = 0; i < n.count; i++) {
+    const x = n.getX(i), y = n.getY(i), z = n.getZ(i), l = Math.hypot(x, y, z);
+    if (!(l > 1e-4) || !Number.isFinite(l)) n.setXYZ(i, 0, 1, 0); else n.setXYZ(i, x / l, y / l, z / l);
+  }
+  return geo;
 }
-const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass = [], shrooms = [];
+const chunks = [];
+function instanced(geo, mat, list, { cast = false, receive = true, far = 130 } = {}){
+  sane(geo);
+  const CELL = 48, buckets = new Map(), tint = new THREE.Color();
+  list.forEach(t => { const k = Math.floor(t.x / CELL) + ',' + Math.floor(t.z / CELL); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(t); });
+  const depth = cast && mat.map && mat.alphaTest ? new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPacking, map:mat.map, alphaTest:mat.alphaTest }) : null;
+  const out = [];
+  buckets.forEach(items => {
+    const mesh = new THREE.InstancedMesh(geo, mat, items.length);
+    items.forEach((t, i) => {
+      q.setFromAxisAngle(up, t.rot); sc.set(t.s * (t.sx || 1), t.s * (t.sy || 1), t.s * (t.sz || t.sx || 1)); ps.set(t.x, t.y, t.z);
+      m4.compose(ps, q, sc); mesh.setMatrixAt(i, m4);
+      tint.setScalar(t.tint || 1); mesh.setColorAt(i, tint);
+    });
+    mesh.computeBoundingSphere(); mesh.boundingSphere.radius += 2;   // folga para o vento
+    mesh.castShadow = cast; mesh.receiveShadow = receive; mesh.frustumCulled = true;
+    if (depth) mesh.customDepthMaterial = depth;
+    scene.add(mesh); chunks.push({ mesh, far }); out.push(mesh);
+  });
+  return out;
+}
+const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass = [], shrooms = [], ferns = [];
 {
   const step = LOW ? 4.4 : 3.3, reach = LOW ? 55 : 78;
   for (let x = -95; x < 175; x += step) for (let z = -185; z < 130; z += step) {
@@ -547,7 +709,7 @@ const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass 
     if (isLeafy) { t.s = 5 + R1() * 4; t.sx = .9 + R1() * .4; }
     else { t.s = 8 + R1() * 8 + smooth(10, 50, route) * 5; t.sx = .85 + R1() * .35; }
     // a copa nunca invade a trilha: o afastamento cresce com o tamanho da árvore
-    const crown = t.s * t.sx * (isLeafy ? .3 : .27);
+    const crown = t.s * t.sx * (isLeafy ? .3 : .33);
     if (dT < crown + 1.3 + Math.abs(N1(px * .3, pz * .3)) * 2.5) continue;
     if (dR < RIVER_HALF + crown * .6) continue;
     if (isLeafy) leafy.push(t);
@@ -558,7 +720,7 @@ const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass 
     const a = i / 46 * Math.PI * 2, r = CLEARING.r + 3 + (i % 2) * 2.4 + R1() * 1.2;
     const x = CLEARING.x + Math.cos(a) * r, z = CLEARING.z + Math.sin(a) * r;
     const s = 12 + R1() * 5;
-    if (trailDist(x, z) < s * .26 + 1.5 || lakeDist(x, z) < 3 || inVista(x, z)) continue;
+    if (trailDist(x, z) < s * .32 + 1.5 || lakeDist(x, z) < 3 || inVista(x, z)) continue;
     nearPines.push({ x, y:height(x, z) - .15, z, rot:R1() * 6.3, s, sx:.9, tint:.85 + R1() * .3 });
   }
   // arbustos, pedras, grama e cogumelos que brilham perto da trilha
@@ -571,7 +733,7 @@ const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass 
     if (pick < .2) { const a = R1() * 6.3, r = Math.sqrt(R1()) * (CLEARING.r + 2); x = CLEARING.x + Math.cos(a) * r; z = CLEARING.z + Math.sin(a) * r; }
     else if (pick < .36) { x = (R1() - .5) * 64; z = 70 + R1() * 40; }
     if (trailDist(x, z) < 1.25 || riverDist(x, z) < RIVER_HALF + .6 || lakeDist(x, z) < .8) continue;
-    grass.push({ x, y:height(x, z) - .02, z, rot:R1() * 6.3, s:.8 + R1() * .9, sy:.7 + R1() * .8, tint:.7 + R1() * .5 });
+    grass.push({ x, y:height(x, z) - .02, z, rot:R1() * 6.3, s:.75 + R1() * .8, sy:.55 + R1() * .75, tint:.6 + R1() * .5 });
   }
   for (let i = 0; i < (LOW ? 260 : 700); i++) {
     const s = R1() * trailLen, p = trailAt(s), off = (R1() < .5 ? -1 : 1) * (2.2 + R1() * 9);
@@ -579,6 +741,13 @@ const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass 
     if (trailDist(x, z) < 2.6 || riverDist(x, z) < RIVER_HALF + .4 || lakeDist(x, z) < 1) continue;
     if (meadowDist(x, z) > -2) continue;
     shrubs.push({ x, y:height(x, z) - .05, z, rot:R1() * 6.3, s:.55 + R1() * .9, tint:.75 + R1() * .5 });
+  }
+  for (let i = 0; i < (LOW ? 500 : 1300); i++) {
+    let x, z;
+    if (R1() < .18) { const a = R1() * TAU, r = CLEARING.r - 1 + R1() * 6; x = CLEARING.x + Math.cos(a) * r; z = CLEARING.z + Math.sin(a) * r; if (inVista(x, z)) continue; }
+    else { const s = R1() * trailLen, p = trailAt(s), off = (R1() < .5 ? -1 : 1) * (1.7 + Math.pow(R1(), 1.4) * 9), n = trailAt(Math.min(trailLen, s + 1)).sub(p).normalize(); x = p.x - n.z * off; z = p.z + n.x * off; }
+    if (trailDist(x, z) < 1.7 || riverDist(x, z) < RIVER_HALF + .5 || lakeDist(x, z) < 1.2 || meadowDist(x, z) > -1) continue;
+    ferns.push({ x, y:height(x, z) - .03, z, rot:R1() * TAU, s:.75 + R1() * .8, sy:.8 + R1() * .4, tint:.75 + R1() * .45 });
   }
   for (let i = 0; i < (LOW ? 120 : 260); i++) {
     let x, z;
@@ -592,20 +761,24 @@ const nearPines = [], farPines = [], leafy = [], shrubs = [], rocks = [], grass 
     for (let k = 0; k < 2 + (R1() * 3 | 0); k++) shrooms.push({ x:x + (R1() - .5) * .5, y:height(x, z), z:z + (R1() - .5) * .5, rot:R1() * 6.3, s:.06 + R1() * .08, tint:1 });
   }
 }
-const pineMat = foliage(), leafyMat = foliage(), shrubMat = windy(new THREE.MeshStandardMaterial({ vertexColors:true, roughness:.9 }), .25, .1);
+const pineMat = cardMat(sprigTex, .07, .3); pineMat.color.setScalar(.8);   // agulhas prateadas pela lua, sem cara de neve
+const farPineMat = foliage(), leafyMat = cardMat(leafTex, .07, .3), shrubMat = cardMat(leafTex, .25, .1), fernMat = cardMat(fernTex, .35, 0);
 const RG = rng(5);
-instanced(LOW ? farPineGeo(RG) : pineGeo(11, 9, RG), pineMat, nearPines, { cast:!LOW });
-instanced(farPineGeo(RG), pineMat, farPines);
+instanced(pineGeo(LOW ? 11 : 17, LOW ? 7 : 10, RG), pineMat, nearPines, { cast:!LOW });
+// longe da trilha: o mesmo pinheiro de ramos, com menos andares (no modo leve, cones simples)
+if (LOW) instanced(farPineGeo(RG), farPineMat, farPines, { far:120 });
+else instanced(pineGeo(13, 8, RG), pineMat, farPines, { far:140 });
 instanced(leafyGeo(RG), leafyMat, leafy, { cast:!LOW });
-instanced(shrubGeo(), shrubMat, shrubs);
-instanced(grassGeo(RG), grassMat, grass, { receive:!LOW });
-instanced(rockGeo(RG, false), new THREE.MeshStandardMaterial({ vertexColors:true, roughness:.85 }), rocks, { cast:!LOW });
+instanced(shrubGeo(RG), shrubMat, shrubs, { far:70 });
+instanced(fernGeo(RG), fernMat, ferns, { far:60 });
+instanced(grassGeo(RG), grassMat, grass, { receive:!LOW, far:55 });
+instanced(rockGeo(RG, false), new THREE.MeshStandardMaterial({ vertexColors:true, roughness:.85 }), rocks, { cast:!LOW, far:80 });
 {
   // cogumelos bioluminescentes: haste clara e chapéu que brilha em ciano
   const stem = new THREE.CylinderGeometry(.18, .26, 1, 6); stem.translate(0, .5, 0);
   const cap = new THREE.SphereGeometry(.62, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2); cap.translate(0, 1, 0);
-  instanced(stem, new THREE.MeshStandardMaterial({ color:'#cfe6dc', roughness:.6 }), shrooms);
-  instanced(cap, new THREE.MeshStandardMaterial({ color:'#3ee0d0', emissive:'#36e6d6', emissiveIntensity:2.2, roughness:.4 }), shrooms);
+  instanced(stem, new THREE.MeshStandardMaterial({ color:'#cfe6dc', roughness:.6 }), shrooms, { far:60 });
+  instanced(cap, new THREE.MeshStandardMaterial({ color:'#3ee0d0', emissive:'#36e6d6', emissiveIntensity:2.2, roughness:.4 }), shrooms, { far:60 });
 }
 
 /* ---------------- travessia: pedras no rio ---------------- */
@@ -708,7 +881,9 @@ const mistMat = new THREE.ShaderMaterial({
       float edge = 1. - smoothstep(.2, .5, length(vUv - .5));
       float a = smoothstep(.45, .9, n) * edge * .22;
       float near = smoothstep(6., 22., length(cameraPosition - vW));
-      gl_FragColor = vec4(uColor, a * near);
+      // de lado (rente ao chão) a lâmina de névoa vira uma linha dura: some suavemente
+      float graze = smoothstep(.015, .12, abs(normalize(cameraPosition - vW).y));
+      gl_FragColor = vec4(uColor, a * near * graze);
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
     }`
@@ -731,7 +906,7 @@ const shaftMat = new THREE.ShaderMaterial({
       gl_FragColor = vec4(uColor * a * .085, 1.); }`
 });
 {
-  const R = rng(13), spots = [[3, 58], [-6, 44], [5, 34], [-4, 22], [62, -20], [68, -36], [76, -66], [84, -70], [70, -78], [90, -84]];
+  const R = rng(13), spots = [[3, 58], [-6, 44], [5, 34], [-4, 22], [62, -20], [68, -36], [64, -52]];
   const axis = MOON_DIR.clone();
   spots.forEach(([x, z]) => {
     const w = 2.5 + R() * 3.5, L = 46;
@@ -745,10 +920,10 @@ const shaftMat = new THREE.ShaderMaterial({
 }
 
 /* ---------------- pós-processamento ---------------- */
-const composer = new EffectComposer(renderer);
-composer.setPixelRatio(pr); composer.setSize(innerWidth, innerHeight);
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(VW.w * pr, VW.h * pr, { type:THREE.HalfFloatType, samples:LOW ? 0 : 4 }));
+composer.setPixelRatio(pr); composer.setSize(VW.w, VW.h);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth / 2, innerHeight / 2), LOW ? .55 : .7, .6, .78);
+const bloom = new UnrealBloomPass(new THREE.Vector2(VW.w / 2, VW.h / 2), LOW ? .55 : .7, .6, .78);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -835,7 +1010,7 @@ let lastRip = 0;
 function ripplePoint(e){
   if (!motionOn() || !fine) return;
   const now = U.uTime.value; if (now - lastRip < .45) return;
-  ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+  ndc.set(e.clientX / VW.w * 2 - 1, -(e.clientY / VW.h) * 2 + 1); ray.setFromCamera(ndc, camera);
   if (!ray.ray.intersectPlane(waterPlane, hit)) return;
   if (hit.distanceTo(camera.position) > 45) return;
   if (riverDist(hit.x, hit.z) < RIVER_HALF + .4 || lakeDist(hit.x, hit.z) < .5) { waterUniforms.uRip.value.set(hit.x, hit.z, now, 0); lastRip = now; }
@@ -843,7 +1018,7 @@ function ripplePoint(e){
 const lanternBodies = () => lanterns.map(l => l.body);
 let overLantern = null;
 function pickLantern(e){
-  ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+  ndc.set(e.clientX / VW.w * 2 - 1, -(e.clientY / VW.h) * 2 + 1); ray.setFromCamera(ndc, camera);
   const h = ray.intersectObjects(lanternBodies(), false)[0];
   return h ? lanterns.find(l => l.body === h.object) : null;
 }
@@ -860,14 +1035,24 @@ document.addEventListener('click', e => {
 });
 
 /* ---------------- quadro a quadro ---------------- */
-let needs = true, last = performance.now(), frameAvg = 16, frames = 0, ready = false, litCard = null;
+let needs = true, last = performance.now(), frameAvg = 16, frames = 0, prSteps = 0, ready = false, litCard = null;
 addEventListener('scroll', () => { needs = true; }, { passive:true });
-function resize(){
-  camera.aspect = innerWidth / innerHeight; camera.fov = fovFor(); camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight);
-  bloom.resolution.set(innerWidth / 2, innerHeight / 2); measure(); needs = true;
+function applySize(){
+  renderer.setPixelRatio(pr); renderer.setSize(VW.w, VW.h, false);
+  composer.setPixelRatio(pr); composer.setSize(VW.w, VW.h);
+  flies.uniforms.uPR.value = pr;
 }
-let rz = 0; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
+function resize(){
+  const v = view(); if (v.w === VW.w && v.h === VW.h) { measure(); return; }
+  VW = v;
+  camera.aspect = VW.w / VW.h; camera.fov = fovFor(); camera.updateProjectionMatrix();
+  applySize(); bloom.resolution.set(VW.w / 2, VW.h / 2); measure();
+  needs = true; tick(performance.now());          // desenha já: nada de quadro vazio
+}
+new ResizeObserver(resize).observe(canvas);
+// se o navegador derrubar o contexto (memória da GPU), mostra o fundo pintado até ele voltar
+canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); root.classList.add('world-lost'); });
+canvas.addEventListener('webglcontextrestored', () => { root.classList.remove('world-lost'); needs = true; });
 new MutationObserver(() => { needs = true; if (motionOn()) intro = 1; }).observe(root, { attributes:true, attributeFilter:['data-motion'] });
 
 function frame(now){
@@ -934,19 +1119,20 @@ function tick(now){
     trailItems[i]?.classList.toggle('lit', on === 1);
   });
 
+  // vegetação além da névoa não é desenhada
+  for (const c of chunks) { const b = c.mesh.boundingSphere; c.mesh.visible = camera.position.distanceTo(b.center) - b.radius < c.far; }
+  // resolução adaptativa: se o quadro pesar, reduz a densidade de pixels.
+  // O ajuste acontece antes do desenho (redimensionar depois deixaria o quadro vazio = pisca preto),
+  // só desce, e no máximo 3 vezes — sem oscilar.
+  if (live && dt < .049) {
+    frameAvg = lerp(frameAvg, dt * 1000, .04); frames++;
+    if (frames > 150 && prSteps < 3 && frameAvg > 26 && pr > .75) { frames = 0; prSteps++; pr = Math.max(.75, pr - .2); applySize(); }
+    else if (frames > 150) frames = 0;
+  }
   composer.render();
   if (debug.onFrame) { const f = debug.onFrame; debug.onFrame = null; f(canvas); }
 
   if (!ready) { ready = true; requestAnimationFrame(() => root.classList.add('world-ready')); }
-  // resolução adaptativa: se o quadro pesar, reduz a densidade de pixels
-  if (live) {
-    frameAvg = lerp(frameAvg, dt * 1000, .05); frames++;
-    if (frames > 90) {
-      frames = 0;
-      if (frameAvg > 24 && pr > .7) { pr = Math.max(.7, pr - .15); renderer.setPixelRatio(pr); composer.setPixelRatio(pr); flies.uniforms.uPR.value = pr; }
-      else if (frameAvg < 13 && pr < MAX_PR) { pr = Math.min(MAX_PR, pr + .1); renderer.setPixelRatio(pr); composer.setPixelRatio(pr); flies.uniforms.uPR.value = pr; }
-    }
-  }
 }
 // inspeção durante o desenvolvimento: LicyaWorld.debug.s = metros na trilha (null volta à rolagem)
 const debug = { s:null, onFrame:null,

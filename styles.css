@@ -413,7 +413,7 @@ body{background:var(--abyss);color:var(--on-night)}
 :focus-visible{outline-color:var(--river)}
 
 /* ---------------- o mundo ---------------- */
-.world{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.world{position:fixed;inset:0 0 auto 0;height:100vh;height:100lvh;z-index:0;pointer-events:none;overflow:hidden;background:#071823}
 .world canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1600ms var(--ease-soft)}
 html.world-ready .world canvas{opacity:1}
 /* pôster: o que aparece antes do 3D carregar e quando WebGL não existe */
@@ -428,6 +428,9 @@ html.world-ready .world canvas{opacity:1}
     linear-gradient(100deg,transparent 0 46%,rgba(154,122,90,.35) 49% 51%,transparent 54%),
     linear-gradient(180deg,transparent,#040d16 80%)}
 html.world-ready .world-poster{opacity:0;transition:opacity 1600ms var(--ease-soft) 300ms}
+/* contexto 3D perdido (GPU sem memória): volta o pôster até o navegador restaurar */
+html.world-lost .world canvas{opacity:0;transition:none}
+html.world-lost .world-poster{opacity:1;transition:none}
 /* vinheta e base escura: dão leitura ao texto sem apagar a cena */
 .world-veil{position:absolute;inset:0;
   background:
@@ -665,3 +668,7 @@ html[data-motion=off] .trail li>*{opacity:1;transform:none}
 /* revisão de quadros do 3D (?shot=…&clean) */
 .shot-clean main,.shot-clean .topbar,.shot-clean .rail,.shot-clean .versions,.shot-clean .life{visibility:hidden}
 .brand{white-space:nowrap}
+/* links do contato legíveis sobre a névoa clara da clareira */
+.contact .socials a{color:#e6f4f1;text-shadow:0 1px 14px rgba(3,10,16,.85),0 0 2px rgba(3,10,16,.6)}
+.contact .socials a:hover{color:#fff}
+.foot{text-shadow:0 1px 10px rgba(3,10,16,.8);padding-bottom:5.5rem;background:none}   /* espaço para o seletor de versões fixo */

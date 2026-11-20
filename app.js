@@ -153,9 +153,9 @@ const EN = {
 };
 const STR = {
   pt:{ copy:'Copiar endereço', copied:'Endereço copiado', motionOff:'Reduzir animações', motionOn:'Ativar animações', open:'Abrir projeto',
-       projects:n => n === 1 ? '1 projeto' : `${n} projetos`, showing:(n,g) => `Mostrando ${n} projetos${g ? ' em ' + g : ''}` },
+       projects:n => n === 1 ? '1 projeto' : `${n} projetos`, showing:(n,g) => `Mostrando ${n === 1 ? '1 projeto' : n + ' projetos'}${g ? ' em ' + g : ''}` },
   en:{ copy:'Copy address', copied:'Address copied', motionOff:'Reduce motion', motionOn:'Turn motion on', open:'Open project',
-       projects:n => n === 1 ? '1 project' : `${n} projects`, showing:(n,g) => `Showing ${n} projects${g ? ' in ' + g : ''}` }
+       projects:n => n === 1 ? '1 project' : `${n} projects`, showing:(n,g) => `Showing ${n === 1 ? '1 project' : n + ' projects'}${g ? ' in ' + g : ''}` }
 };
 let lang = store.get('lang') === 'en' ? 'en' : 'pt';
 const t = k => STR[lang][k];
