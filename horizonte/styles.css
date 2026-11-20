@@ -1,0 +1,458 @@
+/* ==========================================================
+   Licya Oliveira — portfólio
+   Direção: "Horizonte". Céu e mar calmos de Fortaleza em azuis
+   claros; o azul-noite aparece como contraponto nos trabalhos e
+   no fechamento. Linhas finas, muito respiro, tipografia editorial.
+   ========================================================== */
+:root{
+  --white:#fbfdff;
+  --ice:#f3f8ff;
+  --mist:#e6effc;
+  --sky:#d3e3f9;
+  --air:#b0cbf1;
+  --blue:#6f9ce4;
+  --cobalt:#3768c6;
+  --deep:#1b438f;
+  --navy:#102b5c;
+  --night:#0a1c3f;
+
+  --ink:#0d1f42;
+  --muted:#506487;
+  --soft:#7d8fae;
+  --hair:rgba(13,31,66,.12);
+  --hair-light:rgba(220,234,255,.16);
+  --on-night:#eaf2ff;
+  --on-night-muted:#a9bddf;
+  --focus:#3768c6;
+
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --sans:"Inter","Segoe UI",system-ui,sans-serif;
+
+  --gutter:clamp(1.25rem,5vw,6rem);
+  --max:1320px;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  --ease-soft:cubic-bezier(.45,0,.2,1);
+  --ease-io:cubic-bezier(.65,0,.45,1);   /* curva de referência (Dropbox Motion) */
+  /* tempos: retorno imediato 160ms · interface 320ms · revelação 700ms · cena 1400ms+ */
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--ice);color:var(--ink);font:300 1rem/1.65 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,h3,p,figure,dl,dd,ol,ul{margin:0}
+ol,ul{list-style:none;padding:0}
+h1,h2{font-family:var(--serif);font-weight:400;letter-spacing:-.025em;line-height:1}
+h2{font-size:clamp(2.7rem,5.6vw,5.4rem)}
+em{font-style:italic}
+:focus-visible{outline:1.5px solid var(--focus);outline-offset:5px;border-radius:6px}
+#main:focus{outline:none}
+.defs{position:absolute;pointer-events:none}
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:fixed;left:1rem;top:1rem;z-index:100;padding:.7rem 1rem;background:var(--white);border-radius:99px;transform:translateY(-200%)}
+.skip:focus{transform:none}
+::selection{background:var(--sky);color:var(--ink)}
+
+/* ---------- peças comuns ---------- */
+.label{display:flex;align-items:center;gap:.7rem;font:400 .78rem/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.label-dot{width:6px;height:6px;border-radius:50%;background:var(--cobalt)}
+.label-light{color:var(--on-night-muted)}
+.label-light .label-dot{background:var(--air)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:52px;padding:.85rem 1.7rem;border-radius:99px;font:400 .97rem/1 var(--sans);letter-spacing:.01em;text-decoration:none;border:1px solid transparent;transition:background-color 500ms var(--ease),color 500ms var(--ease),border-color 500ms var(--ease),transform 300ms var(--ease),box-shadow 500ms var(--ease)}
+.btn:active{transform:scale(.98)}
+.btn-solid{background:var(--navy);color:var(--white);box-shadow:0 14px 30px -18px rgba(16,43,92,.7)}
+.btn-solid:hover{background:var(--cobalt);box-shadow:0 18px 40px -18px rgba(55,104,198,.8)}
+.btn-light{background:var(--white);color:var(--navy)}
+.btn-light:hover{background:var(--sky)}
+.btn-outline{border-color:rgba(220,234,255,.35);color:var(--on-night)}
+.btn-outline:hover{border-color:var(--on-night);background:rgba(255,255,255,.06)}
+.link-line{position:relative;display:inline-flex;align-items:center;min-height:44px;text-decoration:none;font-size:.97rem}
+.link-line::after{content:"";position:absolute;left:0;right:0;bottom:.55rem;height:1px;background:currentColor;transform-origin:right;transition:transform 600ms var(--ease)}
+.link-line:hover::after{transform:scaleX(0)}
+
+/* ---------- cabeçalho ---------- */
+.topbar{position:fixed;inset:0 0 auto;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.15rem var(--gutter);transition:background-color 500ms,box-shadow 500ms,color 500ms,transform 600ms var(--ease),padding 500ms var(--ease)}
+.topbar.is-scrolled{padding-block:.75rem;background:rgba(243,248,255,.74);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 1px 0 var(--hair)}
+.topbar.on-dark{color:var(--on-night);background:rgba(10,28,63,.55);box-shadow:0 1px 0 var(--hair-light)}
+.topbar.is-hidden{transform:translateY(-110%)}
+.brand{font:400 1.45rem/1 var(--serif);letter-spacing:-.01em;text-decoration:none}
+.topbar nav{display:flex;align-items:center;gap:clamp(1rem,2.6vw,2.6rem);font-size:.92rem}
+.topbar nav a{position:relative;text-decoration:none;padding:.55rem 0}
+.topbar nav a::after{content:"";position:absolute;left:50%;bottom:.3rem;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor;opacity:0;transform:translateY(4px);transition:opacity 400ms,transform 400ms var(--ease)}
+.topbar nav a:hover::after,.topbar nav a[aria-current]::after{opacity:1;transform:none}
+.lang{display:inline-flex;align-items:center;gap:.25rem;min-height:44px;padding:0 .2rem;font-size:.8rem;letter-spacing:.08em}
+.lang span{opacity:.45;transition:opacity 300ms}
+.lang .lang-sep{opacity:.3}
+html[lang="pt-BR"] .lang-pt,html[lang="en"] .lang-en{opacity:1}
+
+/* ==========================================================
+   ABERTURA — o horizonte
+   ========================================================== */
+.hero{position:relative;min-height:100svh;display:grid;grid-template-rows:1fr auto auto auto;justify-items:center;text-align:center;padding:clamp(7rem,15vh,10rem) var(--gutter) clamp(2.5rem,6vh,4rem);overflow:hidden;isolation:isolate;
+  background:linear-gradient(180deg,#f6faff 0%,#e9f2fe 34%,#d6e6fb 58%,#c4daf7 60.2%,#d4e5fa 76%,#eef5ff 100%)}
+.sky{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.sun{position:absolute;left:50%;top:58%;width:min(70vw,900px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.95),rgba(255,255,255,.35) 45%,transparent 70%)}
+.haze{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55}
+.haze.h1{width:46vw;height:24vw;left:-8vw;top:16%;background:#cfe0fb}
+.haze.h2{width:40vw;height:22vw;right:-10vw;top:30%;background:#bcd5f6}
+.hero-top{align-self:end;display:grid;justify-items:center;gap:clamp(1.2rem,3vh,2rem);padding-bottom:clamp(.4rem,1.2vh,.9rem)}
+.eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.name{font-family:var(--serif);font-weight:400;font-size:clamp(4.2rem,13.2vw,13.5rem);line-height:.86;letter-spacing:-.045em;color:var(--navy);white-space:nowrap}
+.name-last{color:var(--cobalt)}
+.horizon{width:100%;max-width:var(--max);height:1px;position:relative}
+.horizon span{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(16,43,92,.35) 18%,rgba(16,43,92,.35) 82%,transparent)}
+.water{position:relative;width:100%;display:grid;justify-items:center;height:clamp(4.4rem,10vw,9.5rem);overflow:hidden;pointer-events:none}
+.reflection{transform:scaleY(-1);transform-origin:50% 50%;margin-top:-.06em;opacity:.38;filter:url(#ripple) blur(.6px);-webkit-mask-image:linear-gradient(to top,#000 0%,transparent 75%);mask-image:linear-gradient(to top,#000 0%,transparent 75%);position:absolute;top:0}
+.glint{position:absolute;height:1px;border-radius:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent)}
+.glint.g1{width:16%;top:22%;left:20%}.glint.g2{width:9%;top:38%;left:58%}.glint.g3{width:22%;top:56%;left:34%}.glint.g4{width:7%;top:72%;left:70%}
+.hero-bottom{display:grid;justify-items:center;gap:1.9rem;margin-top:clamp(.6rem,2vh,1.6rem);max-width:38rem}
+.hero-lead{font-size:clamp(1.05rem,1.35vw,1.22rem);line-height:1.6;color:var(--muted)}
+.hero-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1.1rem 2rem}
+
+/* ==========================================================
+   MANIFESTO
+   ========================================================== */
+.manifesto{padding:clamp(6rem,13vw,11rem) var(--gutter) clamp(5rem,10vw,8rem);background:linear-gradient(180deg,#eef5ff,var(--white) 40%,var(--ice));display:grid;justify-items:center}
+.manifesto .label{margin-bottom:2.4rem}
+.manifesto-text{max-width:22em;text-align:center;font:400 clamp(1.9rem,3.8vw,3.6rem)/1.18 var(--serif);letter-spacing:-.015em;color:var(--ink)}
+.manifesto-text .w{transition:opacity 500ms ease,color 500ms ease}
+.js-motion .manifesto-text .w{opacity:.16}
+.js-motion .manifesto-text .w.on{opacity:1}
+.crafts{width:100%;max-width:var(--max);margin-top:clamp(4rem,8vw,7rem);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--hair)}
+.crafts li+li{border-left:1px solid var(--hair)}
+.craft{width:100%;height:100%;display:grid;grid-template-rows:auto auto 1fr auto;gap:.8rem;text-align:left;padding:2.2rem clamp(1.2rem,2.6vw,2.6rem) 2rem;transition:background-color 600ms var(--ease)}
+.craft:hover,.craft:focus-visible{background:linear-gradient(180deg,var(--mist),transparent)}
+.craft-n{font:italic 400 1.25rem var(--serif);color:var(--cobalt)}
+.craft-title{font:400 clamp(1.8rem,2.5vw,2.4rem)/1.05 var(--serif);letter-spacing:-.015em}
+.craft-text{color:var(--muted);max-width:30ch}
+.craft-count{display:flex;align-items:center;justify-content:space-between;margin-top:1.4rem;padding-top:1rem;border-top:1px solid var(--hair);font-size:.85rem;color:var(--muted)}
+.craft-count::after{content:"→";transition:transform 500ms var(--ease)}
+.craft:hover .craft-count::after{transform:translateX(6px)}
+
+/* ==========================================================
+   TRABALHOS — noite azul, marcas em destaque
+   ========================================================== */
+.work{position:relative;padding:clamp(6rem,11vw,10rem) var(--gutter);background:linear-gradient(180deg,var(--navy),var(--night) 60%,#08183a);color:var(--on-night);overflow:hidden;isolation:isolate;border-radius:clamp(28px,4vw,56px) clamp(28px,4vw,56px) 0 0}
+.work-glow{position:absolute;inset:-20% -10% auto;height:70%;z-index:-1;background:radial-gradient(50% 60% at 50% 0%,rgba(111,156,228,.38),transparent 70%)}
+.work-head{max-width:var(--max);margin:0 auto clamp(3rem,6vw,5rem);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:2rem 5rem;align-items:end}
+.work-head .label{margin-bottom:1.6rem}
+.work h2 em{color:var(--air)}
+.work-side p{color:var(--on-night-muted);max-width:40ch}
+.filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.6rem}
+.filters button{min-height:42px;padding:.45rem 1.15rem;border-radius:99px;border:1px solid var(--hair-light);font-size:.88rem;color:var(--on-night-muted);transition:all 400ms var(--ease)}
+.filters button:hover{color:var(--on-night);border-color:rgba(220,234,255,.4)}
+.filters button[aria-pressed=true]{background:var(--on-night);border-color:var(--on-night);color:var(--navy)}
+
+.brands{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(.9rem,1.6vw,1.4rem)}
+.brand-card{grid-column:span 4;transition:opacity 500ms var(--ease)}
+.brand-card.wide{grid-column:span 6}
+.brand-card.is-out{display:none}
+
+
+.brand-card a{position:relative;display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--ink);border-radius:26px;overflow:hidden;isolation:isolate;
+  background:radial-gradient(90% 75% at 50% 32%,color-mix(in srgb,var(--tint) 26%,#f4f8ff),#eef4ff 72%);
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 30px 60px -40px rgba(0,0,0,.6);transition:transform 700ms var(--ease),box-shadow 700ms var(--ease)}
+.brand-card a:hover,.brand-card a:focus-visible{transform:translateY(-6px);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 40px 70px -36px rgba(0,0,0,.7)}
+.stage{position:relative;display:grid;place-items:center;aspect-ratio:1.3;padding:2rem}
+.brand-card.wide .stage{aspect-ratio:1.75}
+/* anéis de água: aparecem quando o selo é tocado */
+.stage::before,.stage::after{content:"";position:absolute;left:50%;top:50%;width:var(--seal);aspect-ratio:1;border-radius:50%;border:1px solid color-mix(in srgb,var(--tint) 45%,#6f9ce4);transform:translate(-50%,-50%) scale(1);opacity:0;pointer-events:none}
+.brand-card a:is(:hover,:focus-visible) .stage::before{animation:ring 1.8s var(--ease-soft) infinite}
+.brand-card a:is(:hover,:focus-visible) .stage::after{animation:ring 1.8s var(--ease-soft) .6s infinite}
+.brand-card.is-near a .stage::before{animation:ring 2.4s var(--ease-soft) 1}
+@keyframes ring{0%{transform:translate(-50%,-50%) scale(1);opacity:.7}100%{transform:translate(-50%,-50%) scale(1.75);opacity:0}}
+.stage{--seal:clamp(120px,13vw,170px)}
+.brand-card.wide .stage{--seal:clamp(130px,14vw,190px)}
+.seal{position:relative;width:var(--seal);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--seal-bg,#fff);box-shadow:0 0 0 6px rgba(255,255,255,.55),0 24px 40px -22px rgba(13,31,66,.55);transition:transform 900ms var(--ease)}
+.brand-card a:is(:hover,:focus-visible) .seal{transform:translateY(-6px) scale(1.03)}
+.seal img{width:100%;height:100%;object-fit:cover}
+.seal.contain img{object-fit:contain;padding:var(--pad,14%)}
+.seal svg{width:100%;height:100%}
+.card-foot{display:grid;grid-template-columns:1fr auto;align-items:end;gap:.2rem 1rem;padding:1.15rem 1.4rem 1.3rem;border-top:1px solid var(--hair);background:rgba(255,255,255,.5);backdrop-filter:blur(6px)}
+.card-foot h3{font:400 clamp(1.45rem,1.9vw,1.9rem)/1.05 var(--serif);letter-spacing:-.01em}
+.card-foot .kind{grid-column:1;font-size:.86rem;color:var(--muted)}
+.swatches{grid-column:2;grid-row:1/3;display:flex;align-self:center}
+.swatches i{width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #f4f8ff;margin-left:-6px;transition:margin 600ms var(--ease)}
+.brand-card a:is(:hover,:focus-visible) .swatches i{margin-left:4px}
+.card-tag{position:absolute;top:1rem;left:1.1rem;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card-open{position:absolute;top:.9rem;right:.9rem;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.7);color:var(--navy);font-size:1rem;opacity:0;transform:scale(.8);transition:opacity 500ms var(--ease),transform 500ms var(--ease)}
+.brand-card a:is(:hover,:focus-visible) .card-open{opacity:1;transform:none}
+.noscript-list{max-width:var(--max);margin:0 auto;display:grid;gap:.6rem}
+
+/* logos recriados em vetor */
+.logo-aurora text{font-family:"Jost",var(--sans);font-weight:200;fill:#4c4440}
+.logo-aurora .sub{font-weight:300;font-size:8px;letter-spacing:.06em;fill:#6f645e}
+.logo-cm text{font-family:"Montserrat",var(--sans);fill:#fff}
+.logo-cm .cm{font-weight:800;letter-spacing:.02em}
+.logo-cm .pisos{font-weight:400;letter-spacing:.32em}
+
+/* ==========================================================
+   SOBRE
+   ========================================================== */
+.about{padding:clamp(6rem,12vw,10rem) var(--gutter);background:linear-gradient(180deg,#eaf2fe,var(--ice))}
+.about-lead,.about-body{max-width:var(--max);margin:0 auto}
+.about-lead .label{margin-bottom:1.6rem}
+.about h2 em{color:var(--cobalt)}
+.about-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(3rem,8vw,8rem);margin-top:clamp(3rem,6vw,5rem)}
+.about-big{font:400 clamp(1.5rem,2.3vw,2.2rem)/1.25 var(--serif);margin-bottom:1.6rem}
+.about-text p:not(.about-big){color:var(--muted);max-width:52ch}
+.path h3{font:400 .78rem var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-bottom:1rem;border-bottom:1px solid var(--hair)}
+.path li{display:grid;grid-template-columns:1fr auto;gap:.1rem 1.5rem;padding:1.15rem 0;border-bottom:1px solid var(--hair);transition:padding 500ms var(--ease)}
+.path li:hover{padding-left:.6rem}
+.path b{font:400 1.4rem/1.2 var(--serif)}
+.path span{grid-column:1;color:var(--muted);font-size:.93rem}
+.path time{grid-column:2;grid-row:1/3;align-self:center;font-size:.85rem;color:var(--cobalt);white-space:nowrap}
+
+/* ==========================================================
+   CONTATO — entardecer
+   ========================================================== */
+.contact{position:relative;padding:clamp(7rem,13vw,11rem) var(--gutter) 0;color:var(--on-night);text-align:center;overflow:hidden;isolation:isolate;border-radius:clamp(28px,4vw,56px) clamp(28px,4vw,56px) 0 0;
+  background:linear-gradient(180deg,#9fbfee 0%,#4d7fd3 24%,#1d4795 52%,var(--navy) 74%,var(--night))}
+.dusk{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.dusk-sun{position:absolute;left:50%;top:-30%;width:min(90vw,1100px);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.55),rgba(214,229,251,.18) 50%,transparent 70%)}
+.contact-inner{display:grid;justify-items:center;max-width:56rem;margin:0 auto}
+.contact .label{margin-bottom:1.8rem;color:#eaf2ff}
+.contact .label-dot{background:#fff}
+.contact h2{font-size:clamp(3.2rem,8vw,8rem);letter-spacing:-.035em}
+.contact h2 em{color:#d6e6ff}
+.contact-lead{margin:1.6rem 0 2.6rem;color:#dbe7fb;max-width:38ch}
+.mail{font:italic 400 clamp(1.6rem,3.6vw,3rem)/1.1 var(--serif);text-decoration:none;background:linear-gradient(currentColor,currentColor) 50% 100%/0 1px no-repeat;padding-bottom:.2rem;transition:background-size 700ms var(--ease);word-break:break-word}
+.mail:hover{background-size:100% 1px}
+.contact-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem;margin-top:2.4rem}
+.copy.is-done{background:rgba(255,255,255,.14);border-color:#fff}
+.socials{display:flex;gap:2.2rem;margin-top:2.6rem}
+.socials a{text-decoration:none;color:var(--on-night-muted);transition:color 400ms}
+.socials a:hover{color:#fff}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem 2rem;max-width:var(--max);margin:clamp(5rem,10vw,8rem) auto 0;padding:1.6rem 0 2rem;border-top:1px solid var(--hair-light);font-size:.85rem;color:var(--on-night-muted)}
+.motion-toggle{min-height:44px;padding:.3rem 1rem;border-radius:99px;border:1px solid var(--hair-light);font-size:.82rem}
+.motion-toggle:hover{color:var(--on-night);border-color:var(--on-night-muted)}
+
+/* ==========================================================
+   PROJETO — painel lateral
+   ========================================================== */
+.sheet{position:fixed;inset:0 0 0 auto;margin:0;width:min(820px,100vw);max-width:none;height:100dvh;max-height:none;padding:0;border:0;background:var(--white);color:var(--ink);overflow:hidden;box-shadow:-40px 0 120px -40px rgba(10,28,63,.6)}
+.sheet::backdrop{background:rgba(10,28,63,.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.sheet[open]{animation:sheet-in 800ms var(--ease) both}
+.sheet[open]::backdrop{animation:fade 600ms ease both}
+.sheet.is-closing{animation:sheet-out 450ms var(--ease-soft) both}
+.sheet.is-closing::backdrop{animation:fade 450ms ease reverse both}
+@keyframes sheet-in{from{transform:translateX(100%)}}
+@keyframes sheet-out{to{transform:translateX(100%)}}
+@keyframes fade{from{opacity:0}}
+.sheet-inner{height:100%;overflow-y:auto;overscroll-behavior:contain}
+.sheet-band{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.4rem;padding:clamp(2rem,4vw,3rem) clamp(1.4rem,4vw,3rem);background:radial-gradient(90% 120% at 0% 0%,color-mix(in srgb,var(--tint) 30%,#eef4ff),#e7effc 70%)}
+.sheet-seal .seal{--seal:clamp(84px,10vw,112px)}
+.sheet-kind{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.sheet-band h2{font-size:clamp(2.2rem,4.4vw,3.6rem)}
+.sheet-close{align-self:start;position:relative;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.7);transition:transform 500ms var(--ease),background-color 400ms}
+.sheet-close span::before,.sheet-close span::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:1px;background:var(--ink);transform:translate(-50%,-50%) rotate(45deg)}
+.sheet-close span::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.sheet-close:hover{transform:rotate(90deg);background:#fff}
+.sheet-body{padding:clamp(1.6rem,4vw,3rem);display:grid;gap:2rem}
+.sheet-intro{font:400 clamp(1.5rem,2.4vw,2rem)/1.25 var(--serif)}
+.sheet-facts{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem 2.4rem}
+.sheet-facts div{padding-top:1rem;border-top:1px solid var(--hair)}
+.sheet-facts dt{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cobalt);margin-bottom:.45rem}
+.sheet-facts dd{color:var(--muted);line-height:1.6}
+.case-palette{display:flex;flex-wrap:wrap;gap:.6rem}
+.case-palette span{display:flex;align-items:center;gap:.45rem;font-size:.8rem;font-variant-numeric:tabular-nums}
+.case-palette i{width:22px;height:22px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(13,31,66,.12)}
+.sheet-figure{display:grid;gap:.9rem}
+.sheet-art{position:relative;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,var(--mist),var(--sky));aspect-ratio:1.25;display:grid;place-items:center}
+.sheet-art img{width:auto;height:auto;min-width:min(56%,400px);max-width:calc(100% - 2rem);max-height:calc(100% - 2rem);object-fit:contain;border-radius:10px;box-shadow:0 24px 40px -26px rgba(13,31,66,.45)}
+.sheet-art img.is-swapping{animation:swap 700ms var(--ease) both}
+@keyframes swap{from{opacity:0;transform:scale(.985)}}
+.sheet-figure figcaption{font-size:.92rem;color:var(--muted)}
+.sheet-views{display:flex;flex-wrap:wrap;gap:.45rem}
+.sheet-views:empty{display:none}
+.sheet-views button{min-height:40px;padding:.4rem 1rem;border-radius:99px;border:1px solid var(--hair);font-size:.86rem;color:var(--muted);transition:all 400ms var(--ease)}
+.sheet-views button:hover{color:var(--ink);border-color:var(--air)}
+.sheet-views button[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sheet-links{display:flex;flex-wrap:wrap;gap:.6rem}
+.sheet-links:empty{display:none}
+.sheet-links a{display:inline-flex;align-items:center;gap:.5rem;min-height:46px;padding:.6rem 1.3rem;border-radius:99px;text-decoration:none;font-size:.93rem;background:var(--navy);color:#fff;transition:background-color 400ms}
+.sheet-links a.alt{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 1px var(--hair)}
+.sheet-links a:hover{background:var(--cobalt);color:#fff}
+.sheet-nav{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--hair);margin-top:1rem}
+.sheet-nav button{display:grid;gap:.2rem;padding:1.4rem 0;text-align:left;min-height:44px}
+.sheet-nav button:last-child{text-align:right;border-left:1px solid var(--hair)}
+.sheet-nav small{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.sheet-nav span{font:400 1.4rem var(--serif);transition:color 300ms}
+.sheet-nav button:hover span{color:var(--cobalt)}
+.sheet-body>*{transition:none}
+.js-motion .sheet[open] .sheet-body>*{animation:rise 800ms var(--ease) both}
+.js-motion .sheet[open] .sheet-body>*:nth-child(2){animation-delay:80ms}
+.js-motion .sheet[open] .sheet-body>*:nth-child(3){animation-delay:160ms}
+.js-motion .sheet[open] .sheet-body>*:nth-child(n+4){animation-delay:220ms}
+
+/* ==========================================================
+   ENTRADAS (só com JS e movimento ativo)
+   ========================================================== */
+.js-motion .reveal{opacity:0;transform:translateY(26px);transition:opacity 1100ms var(--ease),transform 1100ms var(--ease)}
+.js-motion .reveal.is-in{opacity:1;transform:none}
+/* --- Cena de abertura: "Amanhecer" (3 tempos) ---
+   1. preparação: céu de pré-aurora, linha do horizonte se desenha do centro
+   2. mudança: o sol sobe, o céu clareia, o nome emerge de trás do horizonte
+      enquanto o reflexo desce para dentro da água (movimentos espelhados)
+   3. resolução: a frase e as ações aparecem; a água segue ondulando */
+.sky::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#7f9fd6 0%,#a9c1ea 45%,#8fb0e2 60%,#c3d6f4 100%);opacity:0}
+.js-motion .sky::before{animation:predawn 2800ms var(--ease-io) both}
+@keyframes predawn{from{opacity:.85}to{opacity:0}}
+.js-motion .sun{animation:sunrise 3000ms var(--ease) both,breathe 10s ease-in-out 3s infinite}
+@keyframes sunrise{from{transform:translate(-50%,-22%) scale(.7);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.js-motion .horizon span{transform:scaleX(0);animation:line 1600ms var(--ease-io) 150ms forwards}
+@keyframes line{to{transform:scaleX(1)}}
+.hero h1.name{clip-path:inset(-40% -6% -.04em -6%)}
+.js-motion .hero h1 .name-first,.js-motion .hero h1 .name-last{display:inline-block;animation:emerge 1700ms var(--ease) both}
+.js-motion .hero h1 .name-first{animation-delay:700ms}
+.js-motion .hero h1 .name-last{animation-delay:860ms}
+@keyframes emerge{from{transform:translateY(105%)}to{transform:none}}
+.js-motion .reflection{animation:descend 1900ms var(--ease) 820ms both}
+@keyframes descend{from{transform:scaleY(-1) translateY(100%);opacity:0}to{transform:scaleY(-1);opacity:.38}}
+.js-motion .hero .eyebrow{animation:rise 1200ms var(--ease) 1300ms both}
+.js-motion .hero-bottom{animation:rise 1200ms var(--ease) 1650ms both}
+.js-motion .topbar{animation:fade-down 1200ms var(--ease) 1500ms backwards}
+@keyframes fade-down{from{opacity:0;transform:translateY(-12px)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.js-motion .glint{animation:glint 7s ease-in-out infinite}
+.js-motion .glint.g2{animation-delay:-2s;animation-duration:9s}
+.js-motion .glint.g3{animation-delay:-4s;animation-duration:11s}
+.js-motion .glint.g4{animation-delay:-1s;animation-duration:8s}
+@keyframes glint{0%,100%{opacity:0;transform:translateX(-12px)}50%{opacity:.9;transform:translateX(12px)}}
+.js-motion .haze.h1{animation:drift 22s ease-in-out infinite alternate}
+.js-motion .haze.h2{animation:drift 26s ease-in-out -8s infinite alternate-reverse}
+@keyframes drift{to{transform:translate(6vw,2vw) scale(1.1)}}
+.js-motion .dusk-sun{animation:breathe 10s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.78}}
+html.is-hidden-tab *{animation-play-state:paused!important}
+
+/* movimento desligado */
+html[data-motion=off] *,html[data-motion=off] *::before,html[data-motion=off] *::after{animation:none!important;transition-duration:1ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+html[data-motion=off] .reflection{filter:blur(.6px)}
+
+/* ==========================================================
+   RESPONSIVO
+   ========================================================== */
+@media (max-width:1024px){
+  .work-head{grid-template-columns:1fr}
+  .brand-card,.brand-card.wide{grid-column:span 6}
+  .about-body{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .topbar{padding:1rem var(--gutter)}
+  .topbar nav{gap:1rem;font-size:.88rem}
+  .topbar nav a[href="#sobre"]{display:none}
+  .hero{padding-top:7.5rem;grid-template-rows:1fr auto auto auto}
+  .name{font-size:clamp(3.6rem,21vw,6.6rem);white-space:normal;line-height:.9}
+  .name{display:flex;flex-direction:column;align-items:center}
+  .water{height:clamp(5rem,30vw,8rem)}
+  .eyebrow{font-size:.72rem;letter-spacing:.16em}
+  .hero-actions{flex-direction:column;width:100%}
+  .hero-actions .btn{width:100%}
+  .manifesto-text{text-align:left}
+  .manifesto{justify-items:start}
+  .crafts{grid-template-columns:1fr}
+  .crafts li+li{border-left:0;border-top:1px solid var(--hair)}
+  .craft{padding:1.8rem .2rem}
+  .brands{grid-template-columns:minmax(0,1fr);gap:1rem}
+  .brand-card,.brand-card.wide{grid-column:1/-1}
+  .brand-card.wide .stage,.stage{aspect-ratio:1.35}
+  .sheet{width:100vw}
+  .sheet-band{grid-template-columns:auto 1fr;padding-top:4.6rem}
+  .sheet-close{position:absolute;top:1rem;right:1rem}
+  .sheet-facts{grid-template-columns:1fr}
+  .path li{grid-template-columns:1fr}
+  .path time{grid-column:1;grid-row:auto;margin-top:.3rem}
+  .contact-actions{flex-direction:column;width:100%}
+  .contact-actions .btn{width:100%}
+  .foot{flex-direction:column;align-items:center;text-align:center}
+}
+
+/* ==========================================================
+   SISTEMA DE MOVIMENTO
+   Cada gesto tem um papel: a água responde ao toque, as marcas
+   emergem como selos, o painel recebe o selo do card clicado.
+   ========================================================== */
+
+/* progresso de leitura: uma linha de horizonte sob o cabeçalho */
+.progress{position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--cobalt) 30%,var(--cobalt) 70%,transparent);transform-origin:left;transform:scaleX(var(--p,0));opacity:.55;pointer-events:none}
+.topbar.on-dark .progress{background:linear-gradient(90deg,transparent,var(--air) 30%,var(--air) 70%,transparent)}
+
+/* títulos: cada trecho sobe de trás de uma máscara */
+.mask{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .12em .14em;margin:0 -.12em -.14em}
+.js-motion .mask>*{display:inline-block;transform:translateY(112%);transition:transform 1300ms var(--ease)}
+.js-motion .mask+.mask>*{transition-delay:140ms}
+.js-motion .is-revealed .mask>*{transform:none}
+
+/* manifesto: a névoa se dissipa palavra por palavra */
+.js-motion .manifesto-text .w{filter:blur(2.5px);transition:opacity 700ms ease,filter 900ms ease}
+.js-motion .manifesto-text .w.on{filter:none}
+.manifesto-text{position:relative}
+.manifesto-text::after{content:"";position:absolute;left:32%;right:32%;bottom:-2.4rem;height:1px;background:linear-gradient(90deg,transparent,var(--cobalt),transparent);transform:scaleX(var(--mp,1));opacity:.6}
+
+/* prática: os selos das marcas de cada área se abrem em leque */
+.craft{grid-template-rows:auto auto 1fr auto auto}
+.craft-seals{display:flex;align-items:center;height:42px;margin-top:.6rem}
+.craft-seals .seal{--seal:38px;box-shadow:0 0 0 3px var(--white),0 8px 16px -8px rgba(13,31,66,.5);margin-left:-14px;transition:margin 700ms var(--ease),transform 700ms var(--ease)}
+.craft-seals .seal:first-child{margin-left:0}
+.craft-seals .seal.contain img{padding:6%}
+.craft:is(:hover,:focus-visible) .craft-seals .seal{margin-left:6px}
+.craft:is(:hover,:focus-visible) .craft-seals .seal:first-child{margin-left:0}
+.craft:is(:hover,:focus-visible) .craft-seals .seal:nth-child(2n){transform:translateY(-4px)}
+.craft:is(:hover,:focus-visible) .craft-seals .seal:nth-child(2n+1){transform:translateY(2px)}
+
+/* marcas: entrada — o card sobe, o selo emerge logo depois */
+.js-motion .brand-card.pre{opacity:0;transform:translateY(46px)}
+.js-motion .brand-card.pre .seal{opacity:0;transform:scale(.8) translateY(14px)}
+.js-motion .brand-card.pre .card-foot{opacity:0}
+.brand-card.shown{transition:opacity 1000ms var(--ease) var(--d,0ms),transform 1300ms var(--ease) var(--d,0ms)}
+.brand-card.shown .seal{transition:opacity 900ms var(--ease) calc(var(--d,0ms) + 260ms),transform 1500ms var(--ease) calc(var(--d,0ms) + 260ms)}
+.brand-card.shown .card-foot{transition:opacity 900ms var(--ease) calc(var(--d,0ms) + 420ms)}
+
+/* marcas: inclinação e reflexo de luz que seguem o cursor */
+.brand-card a{transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px))}
+.brand-card a:is(:hover,:focus-visible){--lift:-6px;transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift))}
+.brand-card a.is-tilting{transition:transform 200ms ease-out,box-shadow 700ms var(--ease)}
+.brand-card a::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;background:radial-gradient(460px circle at var(--lx,50%) var(--ly,0%),rgba(255,255,255,.7),transparent 46%);mix-blend-mode:soft-light;opacity:0;transition:opacity 700ms var(--ease)}
+.brand-card a:is(:hover,:focus-visible)::after{opacity:1}
+
+/* rótulo que acompanha o cursor sobre os projetos */
+.cursor-pill{position:fixed;left:0;top:0;z-index:30;pointer-events:none;display:flex;align-items:center;gap:.5rem;padding:.65rem 1.05rem;border-radius:99px;background:rgba(10,28,63,.84);color:#fff;font-size:.8rem;letter-spacing:.03em;white-space:nowrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 30px -14px rgba(0,0,0,.6);opacity:0;transition:opacity 350ms var(--ease);will-change:transform}
+.cursor-pill.is-on{opacity:1}
+.cursor-pill i{width:6px;height:6px;border-radius:50%;background:var(--air)}
+
+/* trajetória: as linhas se desenham, os textos assentam */
+.path li{position:relative;border-bottom-color:transparent}
+.path li::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--hair);transform-origin:left}
+.js-motion .path li::after{transform:scaleX(0);transition:transform 1300ms var(--ease) calc(var(--i,0) * 110ms)}
+.js-motion .path.is-in li::after{transform:scaleX(1)}
+.js-motion .path li>*{opacity:0;transform:translateY(10px);transition:opacity 900ms var(--ease) calc(var(--i,0) * 110ms + 220ms),transform 900ms var(--ease) calc(var(--i,0) * 110ms + 220ms)}
+.js-motion .path.is-in li>*{opacity:1;transform:none}
+.path li:nth-child(1){--i:0}.path li:nth-child(2){--i:1}.path li:nth-child(3){--i:2}.path li:nth-child(4){--i:3}.path li:nth-child(5){--i:4}
+
+/* contato: o e-mail ondula letra por letra */
+.mail .ch{display:inline-block;white-space:pre;transition:transform 520ms var(--ease) calc(var(--i,0) * 12ms)}
+.mail:is(:hover,:focus-visible) .ch{transform:translateY(-.12em)}
+
+/* painel: o selo do card voa até o cabeçalho do projeto */
+.flight{position:fixed;inset:0;width:100vw;height:100vh;margin:0;padding:0;border:0;background:none;overflow:visible;pointer-events:none}
+.flight .seal{position:fixed;left:0;top:0;transform-origin:0 0}
+.sheet-seal.is-waiting .seal{opacity:0}
+.js-motion .sheet[open] .sheet-band .sheet-id{animation:rise 900ms var(--ease) 260ms both}
+.js-motion .sheet[open] .sheet-facts>div{animation:rise 800ms var(--ease) both}
+.js-motion .sheet[open] .sheet-facts>div:nth-child(1){animation-delay:240ms}
+.js-motion .sheet[open] .sheet-facts>div:nth-child(2){animation-delay:310ms}
+.js-motion .sheet[open] .sheet-facts>div:nth-child(3){animation-delay:380ms}
+.js-motion .sheet[open] .sheet-facts>div:nth-child(4){animation-delay:450ms}
+.case-palette i{transition:transform 500ms var(--ease)}
+.case-palette span:hover i{transform:scale(1.25)}
+@keyframes swap{from{opacity:0;clip-path:inset(0 0 0 14% round 10px);transform:translateX(16px)}to{opacity:1;clip-path:inset(0 0 0 0 round 10px);transform:none}}
+
+@media (max-width:760px){
+  .js-motion .hero h1 .name-first,.js-motion .hero h1 .name-last{animation-name:emerge-m}
+  @keyframes emerge-m{from{opacity:0;transform:translateY(38%)}to{opacity:1;transform:none}}
+  .hero h1.name{clip-path:none}
+  .manifesto-text::after{left:0;right:40%}
+}

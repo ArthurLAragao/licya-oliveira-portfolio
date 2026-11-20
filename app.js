@@ -146,6 +146,7 @@ const EN = {
   contactLabel:'Contact', contactTitle:'Shall we create something', contactTitleEm:'together?',
   contactLead:'Have a brand, website or content project in mind? Tell me what you’re working on.', contactCta:'Send an email',
   footer:'Design & development · Fortaleza, BR',
+  cue:'Into the forest', versions:'Versions', versionsLabel:'Portfolio versions',
   viewsLabel:'Project views', close:'Close project', ctxLabel:'Context', doneLabel:'What was done', itemsLabel:'Deliverables', paletteLabel:'Brand colors',
   otherProjects:'Other projects', prev:'Previous', next:'Next'
 };
@@ -210,7 +211,7 @@ document.addEventListener('visibilitychange', () => root.classList.toggle('is-hi
 
 /* ---------------- cabeçalho ---------------- */
 const topbar = $('.topbar');
-const darkSections = $$('.work, .contact');
+const darkSections = $$('.hero, .work, .contact');
 let lastY = scrollY;
 function onScroll(){
   const y = scrollY;

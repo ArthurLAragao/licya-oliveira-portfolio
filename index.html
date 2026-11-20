@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Licya Oliveira — Design &amp; desenvolvimento</title>
   <meta name="description" content="Identidades visuais, sites e conteúdo social por Licya Oliveira, designer e desenvolvedora em Fortaleza, Ceará.">
-  <meta name="theme-color" content="#eaf2fd">
+  <meta name="theme-color" content="#08192a">
   <meta property="og:title" content="Licya Oliveira — Design &amp; desenvolvimento">
   <meta property="og:description" content="Identidades visuais, sites e conteúdo social. Fortaleza, CE.">
   <meta property="og:type" content="website">
@@ -19,20 +19,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&family=Montserrat:wght@400;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23dbe8fb'/%3E%3Ctext x='50%25' y='60%25' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%230e2856'%3ELo%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%230f2f42'/%3E%3Ctext x='50%25' y='60%25' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%239fd0d4'%3ELo%3C/text%3E%3C/svg%3E">
 </head>
 <body>
   <a class="skip" href="#main" data-i18n="skip">Pular para o conteúdo</a>
 
   <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
-    <filter id="ripple" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+    <filter id="ripple" x="-20%" y="-10%" width="140%" height="120%" color-interpolation-filters="sRGB">
       <feTurbulence id="ripple-noise" type="fractalNoise" baseFrequency="0.006 0.085" numOctaves="1" seed="4" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </svg>
 
   <header class="topbar">
-    <a class="brand" href="#inicio" aria-label="Licya Oliveira, início">Licya <em>Oliveira</em></a>
+    <a class="brand" href="#inicio" aria-label="Licya Oliveira, início">
+      <svg class="brand-leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20C5 10 11 4 20 3c0 9-6 15-15 17Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 20 15 9" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+      <span>Licya <em>Oliveira</em></span>
+    </a>
     <nav aria-label="Principal" data-i18n-attr="aria-label:navLabel">
       <a href="#trabalhos" data-i18n="navWork">Trabalhos</a>
       <a href="#sobre" data-i18n="navAbout">Sobre</a>
@@ -42,39 +45,70 @@
   </header>
 
   <main id="main" tabindex="-1">
-    <!-- Abertura: o nome repousa sobre o horizonte -->
-    <section class="hero" id="inicio" aria-labelledby="hero-title">
-      <div class="sky" aria-hidden="true"><i class="sun"></i><i class="haze h1"></i><i class="haze h2"></i></div>
+    <!-- Abertura: a mata ao anoitecer -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title" data-swarm>
+      <div class="forest" aria-hidden="true">
+        <i class="stars"></i>
+        <i class="moon"></i>
+        <span class="rays"><i></i><i></i><i></i></span>
+        <div class="flock"></div>
+        <div class="layer l1" data-depth="0.12" data-ridge="1"></div>
+        <i class="mist m1"></i>
+        <div class="layer l2" data-depth="0.22" data-ridge="2"></div>
+        <div class="deer-track">
+          <svg class="deer" viewBox="0 -14 120 114" role="presentation">
+            <g fill="currentColor">
+              <path class="tail" d="M31 41 24 44l5 4Z"/>
+              <g transform="translate(38 54)"><path class="leg a" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
+              <g transform="translate(45 54)"><path class="leg b" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
+              <g transform="translate(79 54)"><path class="leg b" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
+              <g transform="translate(86 54)"><path class="leg a" d="M-2.4 0h4.8l-.8 22 .8 18-2.2 1-1-19Z"/></g>
+              <path d="M30 46c-1-10 12-14 28-13 14 0 26-1 32 5 5 6 3 17-6 21-14 3-38 3-46 0-6-2-8-7-8-13Z"/>
+              <g class="head">
+                <path d="M80 42c2-8 6-18 12-26l8-2c-1 8-6 18-8 30Z"/>
+                <path d="M92 10c4-4 11-3 18 3 3 3 1 6-3 6h-8c-4-1-7-4-7-9Z"/>
+                <path d="m94 9-7-6 4 7Z"/>
+                <path d="M96 8c-1-6-3-12-6-18M94 1l-6-3M93-4l3-7M98 7c1-6 4-11 8-16M101 0l5-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <i class="mist m2"></i>
+        <div class="layer l3" data-depth="0.36" data-ridge="3"></div>
+        <canvas class="fireflies" data-count="46"></canvas>
+        <div class="frame-tree left" data-tree="left"></div>
+        <div class="frame-tree right" data-tree="right"></div>
+        <div class="layer l4" data-depth="0.5" data-ridge="4"></div>
+        <div class="layer l5" data-depth="0.62" data-ridge="5"></div>
+        <i class="mist m3"></i>
+        <i class="veil"></i>
+      </div>
 
       <div class="hero-top">
         <p class="eyebrow" data-i18n="heroEyebrow">Design &amp; desenvolvimento · Fortaleza, Ceará</p>
         <h1 id="hero-title" class="name"><span class="name-first">Licya</span> <em class="name-last">Oliveira</em></h1>
       </div>
 
-      <div class="horizon" aria-hidden="true"><span></span></div>
-
-      <div class="water" aria-hidden="true">
-        <p class="name reflection"><span class="name-first">Licya</span> <em class="name-last">Oliveira</em></p>
-        <i class="glint g1"></i><i class="glint g2"></i><i class="glint g3"></i><i class="glint g4"></i>
-      </div>
-
       <div class="hero-bottom">
         <p class="hero-lead" data-i18n="heroLead">Identidades visuais, sites e conteúdo para marcas que querem ser lembradas — do primeiro traço à última linha de código.</p>
         <div class="hero-actions">
           <a class="btn btn-solid" href="#trabalhos" data-i18n="heroCta">Conhecer os trabalhos</a>
-          <a class="link-line" href="#contato" data-i18n="heroCta2">Iniciar um projeto</a>
+          <a class="btn btn-ghost" href="#contato" data-i18n="heroCta2">Iniciar um projeto</a>
         </div>
       </div>
+      <a class="scroll-cue" href="#pratica" aria-hidden="true" tabindex="-1"><i></i><span data-i18n="cue">Entre na mata</span></a>
     </section>
 
-    <!-- Manifesto -->
-    <section class="manifesto" id="pratica" aria-labelledby="manifesto-title">
+    <!-- Manifesto: a clareira na névoa -->
+    <section class="manifesto" id="pratica" aria-labelledby="manifesto-title" data-leaves>
+      <div class="fogline" aria-hidden="true"></div>
       <h2 id="manifesto-title" class="sr-only" data-i18n="manifestoLabel">O que eu faço</h2>
       <p class="label" aria-hidden="true"><span class="label-dot"></span><span data-i18n="manifestoLabel">O que eu faço</span></p>
       <p class="manifesto-text" data-i18n="manifesto" data-split>Crio identidades visuais, construo sites e cuido do conteúdo que mantém cada marca viva. O mesmo olhar acompanha o negócio do primeiro esboço até o código publicado — com calma, intenção e atenção aos detalhes.</p>
       <ul class="crafts">
         <li class="reveal">
           <button class="craft" type="button" data-filter="identity">
+            <svg class="craft-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38C10 20 22 10 40 8c0 18-10 30-30 30Z"/><path d="M10 38 30 18"/></svg>
             <span class="craft-n">i.</span>
             <span class="craft-title" data-i18n="discId">Identidade visual</span>
             <span class="craft-text" data-i18n="discIdText">Logotipos, paletas e aplicações que dão à marca um rosto reconhecível.</span>
@@ -83,6 +117,7 @@
         </li>
         <li class="reveal">
           <button class="craft" type="button" data-filter="web">
+            <svg class="craft-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 44V6"/><path d="M24 12l-8-4M24 12l8-4M24 20l-10-5M24 20l10-5M24 28l-12-5M24 28l12-5M24 36l-10-4M24 36l10-4"/></svg>
             <span class="craft-n">ii.</span>
             <span class="craft-title" data-i18n="discWeb">Sites &amp; aplicativos</span>
             <span class="craft-text" data-i18n="discWebText">Sites, catálogos digitais e aplicativos, desenhados e escritos à mão.</span>
@@ -91,6 +126,7 @@
         </li>
         <li class="reveal">
           <button class="craft" type="button" data-filter="content">
+            <svg class="craft-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 16v20"/><path d="M24 19C18 9 6 9 8 19c1 6 10 6 16 4M24 19c6-10 18-10 16 0-1 6-10 6-16 4M24 25c-6 2-12 8-8 12 3 2 7-4 8-8M24 25c6 2 12 8 8 12-3 2-7-4-8-8M24 16l-4-6M24 16l4-6"/></svg>
             <span class="craft-n">iii.</span>
             <span class="craft-title" data-i18n="discContent">Conteúdo social</span>
             <span class="craft-text" data-i18n="discContentText">Planejamento editorial, layouts e vídeos curtos para as redes.</span>
@@ -100,9 +136,24 @@
       </ul>
     </section>
 
-    <!-- Trabalhos: as marcas -->
-    <section class="work" id="trabalhos" aria-labelledby="work-title">
+    <!-- Trabalhos: a mata à noite -->
+    <section class="work" id="trabalhos" aria-labelledby="work-title" data-swarm>
+      <div class="ridge" aria-hidden="true" data-divider="#0f2f42"></div>
       <div class="work-glow" aria-hidden="true"></div>
+      <canvas class="fireflies" data-count="34" aria-hidden="true"></canvas>
+      <div class="owl" aria-hidden="true">
+        <svg viewBox="0 0 240 200">
+          <path class="branch" d="M240 120c-40-2-80 4-120 8-30 3-60 12-100 28l-2-4c40-18 74-28 102-31 40-5 80-10 120-11Z"/>
+          <path class="branch" d="M60 142c-6-10-4-22 6-30l2 2c-8 8-9 18-4 27Z"/>
+          <g class="bird-body" fill="currentColor">
+            <path d="M98 126c-6-20-4-52 6-64l-4-16 12 10c4-2 12-2 16 0l12-10-4 16c10 12 12 44 6 64Z"/>
+            <circle class="eye" cx="112" cy="72" r="7"/><circle class="eye" cx="128" cy="72" r="7"/>
+            <circle class="pupil" cx="112" cy="72" r="3.2"/><circle class="pupil" cx="128" cy="72" r="3.2"/>
+            <g class="lids"><ellipse cx="112" cy="72" rx="8" ry="8"/><ellipse cx="128" cy="72" rx="8" ry="8"/></g>
+            <path d="m117 80 3 5 3-5Z" fill="#0d2a38"/>
+          </g>
+        </svg>
+      </div>
       <div class="work-head">
         <div class="reveal">
           <p class="label label-light"><span class="label-dot" aria-hidden="true"></span><span data-i18n="workLabel">Trabalhos selecionados</span></p>
@@ -129,8 +180,10 @@
       </noscript>
     </section>
 
-    <!-- Sobre -->
-    <section class="about" id="sobre" aria-labelledby="about-title">
+    <!-- Sobre: a trilha -->
+    <section class="about" id="sobre" aria-labelledby="about-title" data-leaves>
+      <div class="fogline" aria-hidden="true"></div>
+      <div class="rings" aria-hidden="true"></div>
       <div class="about-lead reveal">
         <p class="label"><span class="label-dot" aria-hidden="true"></span><span data-i18n="aboutLabel">Sobre</span></p>
         <h2 id="about-title"><span data-i18n="aboutTitle">Design encontra</span> <em data-i18n="aboutTitleEm">desenvolvimento.</em></h2>
@@ -153,9 +206,27 @@
       </div>
     </section>
 
-    <!-- Contato: o horizonte ao entardecer -->
-    <section class="contact" id="contato" aria-labelledby="contact-title">
-      <div class="dusk" aria-hidden="true"><i class="dusk-sun"></i></div>
+    <!-- Contato: o lago sob a lua -->
+    <section class="contact" id="contato" aria-labelledby="contact-title" data-swarm>
+      <div class="ridge" aria-hidden="true" data-divider="#0b2233"></div>
+      <div class="lake-scene" aria-hidden="true">
+        <i class="c-moon"></i>
+        <div class="far-shore" data-shore></div>
+        <div class="water"><i class="moon-path"></i><i class="lake-glint a"></i><i class="lake-glint b"></i><i class="lake-glint c"></i></div>
+        <div class="fox">
+          <svg viewBox="0 0 120 100">
+            <g class="fox-body" fill="currentColor">
+              <path class="fox-tail" d="M40 92c-20 2-34-8-32-22 2-8 10-6 12 2 2 10 12 14 24 14Z"/>
+              <path d="M38 92c-4-16 0-34 12-42 6-4 14-4 18 0 6 8 8 26 4 42Z"/>
+              <path d="M58 50c-2-10 2-20 10-22l6-6 2 8c4 2 8 4 16 8-4 4-12 6-18 8-4 4-10 6-16 4Z"/>
+              <path class="fox-ear" d="M65 31V16l8 11Z"/><path class="fox-ear" d="m71 28 5-13 2 14Z"/>
+              <circle class="fox-eye" cx="77" cy="34" r="1.4"/>
+            </g>
+            <path d="M0 100c4-14 14-16 20-10 4-10 16-10 20-2 6-10 20-8 22 2 6-6 18-4 22 2 6-6 20-4 26 8Z" fill="#04101a"/>
+          </svg>
+        </div>
+      </div>
+      <canvas class="fireflies" data-count="40" data-rise aria-hidden="true"></canvas>
       <div class="contact-inner reveal">
         <p class="label label-light"><span class="label-dot" aria-hidden="true"></span><span data-i18n="contactLabel">Contato</span></p>
         <h2 id="contact-title"><span data-i18n="contactTitle">Vamos criar algo</span> <em data-i18n="contactTitleEm">juntos?</em></h2>
@@ -177,6 +248,14 @@
       </footer>
     </section>
   </main>
+
+  <!-- Seletor temporário para comparar as três versões. Remover depois da escolha. -->
+  <nav class="versions" aria-label="Versões do portfólio" data-i18n-attr="aria-label:versionsLabel">
+    <span data-i18n="versions">Versões</span>
+    <a href="anterior/" title="I · Primeira versão">I</a>
+    <a href="horizonte/" title="II · Horizonte">II</a>
+    <a href="./" title="III · Floresta" aria-current="page">III</a>
+  </nav>
 
   <!-- Projeto (painel lateral) -->
   <dialog class="sheet" id="case" aria-labelledby="case-title">
@@ -211,7 +290,8 @@
     </div>
   </dialog>
 
+  <canvas class="life" aria-hidden="true"></canvas>
   <script src="app.js" defer></script>
-  <script src="motion.js" defer></script>
+  <script src="forest.js" defer></script>
 </body>
 </html>
