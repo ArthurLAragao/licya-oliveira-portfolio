@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Licya Oliveira — Design &amp; desenvolvimento</title>
-  <meta name="description" content="Identidades visuais, sites e conteúdo social por Licya Oliveira, designer e desenvolvedora em Fortaleza, Ceará.">
+  <title>Licya Oliveira — Design &amp; development</title>
+  <meta name="description" content="Visual identities, websites and social content by Licya Oliveira, designer and developer based in Fortaleza, Brazil.">
   <meta name="theme-color" content="#08192a">
-  <meta property="og:title" content="Licya Oliveira — Design &amp; desenvolvimento">
-  <meta property="og:description" content="Identidades visuais, sites e conteúdo social. Fortaleza, CE.">
+  <meta property="og:title" content="Licya Oliveira — Design &amp; development">
+  <meta property="og:description" content="Visual identities, websites and social content. Fortaleza, Brazil.">
   <meta property="og:type" content="website">
   <script>
     (function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('motion')}catch(e){}
@@ -22,7 +22,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%230f2f42'/%3E%3Ctext x='50%25' y='60%25' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%239fd0d4'%3ELo%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-  <a class="skip" href="#main" data-i18n="skip">Pular para o conteúdo</a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
   <!-- Mundo 3D: uma câmera percorre a mata conforme a página rola. Decorativo. -->
   <div class="world" aria-hidden="true">
@@ -32,15 +32,18 @@
   </div>
 
   <header class="topbar">
-    <a class="brand" href="#inicio" aria-label="Licya Oliveira, início">
+    <a class="brand" href="#inicio" aria-label="Licya Oliveira, home" data-i18n-attr="aria-label:brandLabel">
       <svg class="brand-leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20C5 10 11 4 20 3c0 9-6 15-15 17Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 20 15 9" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
       <span>Licya <em>Oliveira</em></span>
     </a>
-    <nav aria-label="Principal" data-i18n-attr="aria-label:navLabel">
-      <a href="#trabalhos" data-i18n="navWork">Trabalhos</a>
-      <a href="#sobre" data-i18n="navAbout">Sobre</a>
-      <a href="#contato" data-i18n="navContact">Contato</a>
-      <button class="lang" type="button" aria-label="Switch to English" data-i18n-attr="aria-label:langLabel"><span class="lang-pt">PT</span><span class="lang-sep" aria-hidden="true">/</span><span class="lang-en">EN</span></button>
+    <nav aria-label="Main" data-i18n-attr="aria-label:navLabel">
+      <a href="#trabalhos" data-i18n="navWork">Work</a>
+      <a href="#sobre" data-i18n="navAbout">About</a>
+      <a href="#contato" data-i18n="navContact">Contact</a>
+      <div class="lang-menu">
+        <button class="lang" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="lang-list" aria-label="Choose language" data-i18n-attr="aria-label:langLabel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3Z"/></svg><span class="lang-cur">EN</span><svg class="lang-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+        <ul class="lang-list" id="lang-list" hidden></ul>
+      </div>
     </nav>
   </header>
 
@@ -48,34 +51,34 @@
     <!-- Parada 1 · Borda da mata -->
     <section class="hero" id="inicio" aria-labelledby="hero-title" data-swarm>
       <div class="hero-top">
-        <p class="eyebrow" data-i18n="heroEyebrow">Design &amp; desenvolvimento · Fortaleza, Ceará</p>
+        <p class="eyebrow" data-i18n="heroEyebrow">Design &amp; development · Fortaleza, Brazil</p>
         <h1 id="hero-title" class="name"><span class="name-first">Licya</span> <em class="name-last">Oliveira</em></h1>
       </div>
 
       <div class="hero-bottom">
-        <p class="hero-lead" data-i18n="heroLead">Identidades visuais, sites e conteúdo para marcas que querem ser lembradas — do primeiro traço à última linha de código.</p>
+        <p class="hero-lead" data-i18n="heroLead">Visual identities, websites and content for brands that want to be remembered — from the first sketch to the last line of code.</p>
         <div class="hero-actions">
-          <a class="btn btn-solid" href="#trabalhos" data-i18n="heroCta">Conhecer os trabalhos</a>
-          <a class="btn btn-ghost" href="#contato" data-i18n="heroCta2">Iniciar um projeto</a>
+          <a class="btn btn-solid" href="#trabalhos" data-i18n="heroCta">See the work</a>
+          <a class="btn btn-ghost" href="#contato" data-i18n="heroCta2">Start a project</a>
         </div>
       </div>
-      <a class="scroll-cue" href="#pratica" aria-hidden="true" tabindex="-1"><i></i><span data-i18n="cue">Role para entrar na mata</span></a>
+      <a class="scroll-cue" href="#pratica" aria-hidden="true" tabindex="-1"><i></i><span data-i18n="cue">Scroll into the forest</span></a>
     </section>
 
     <div class="walk" aria-hidden="true"></div>
 
     <!-- Parada 2 · Trilha de terra -->
     <section class="manifesto" id="pratica" aria-labelledby="manifesto-title" data-leaves>
-      <h2 id="manifesto-title" class="sr-only" data-i18n="manifestoLabel">O que eu faço</h2>
-      <p class="label" aria-hidden="true"><span class="label-dot"></span><span data-i18n="manifestoLabel">O que eu faço</span></p>
-      <p class="manifesto-text" data-i18n="manifesto" data-split>Crio identidades visuais, construo sites e cuido do conteúdo que mantém cada marca viva. O mesmo olhar acompanha o negócio do primeiro esboço até o código publicado — com calma, intenção e atenção aos detalhes.</p>
+      <h2 id="manifesto-title" class="sr-only" data-i18n="manifestoLabel">What I do</h2>
+      <p class="label" aria-hidden="true"><span class="label-dot"></span><span data-i18n="manifestoLabel">What I do</span></p>
+      <p class="manifesto-text" data-i18n="manifesto" data-split>I create visual identities, build websites and look after the content that keeps each brand alive. The same eye follows the business from the first sketch to published code — calmly, with intention and attention to detail.</p>
       <ul class="crafts">
         <li class="reveal">
           <button class="craft" type="button" data-filter="identity">
             <svg class="craft-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38C10 20 22 10 40 8c0 18-10 30-30 30Z"/><path d="M10 38 30 18"/></svg>
             <span class="craft-n">i.</span>
-            <span class="craft-title" data-i18n="discId">Identidade visual</span>
-            <span class="craft-text" data-i18n="discIdText">Logotipos, paletas e aplicações que dão à marca um rosto reconhecível.</span>
+            <span class="craft-title" data-i18n="discId">Visual identity</span>
+            <span class="craft-text" data-i18n="discIdText">Wordmarks, palettes and applications that give a brand a recognizable face.</span>
             <span class="craft-count"></span>
           </button>
         </li>
@@ -83,8 +86,8 @@
           <button class="craft" type="button" data-filter="web">
             <svg class="craft-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 44V6"/><path d="M24 12l-8-4M24 12l8-4M24 20l-10-5M24 20l10-5M24 28l-12-5M24 28l12-5M24 36l-10-4M24 36l10-4"/></svg>
             <span class="craft-n">ii.</span>
-            <span class="craft-title" data-i18n="discWeb">Sites &amp; aplicativos</span>
-            <span class="craft-text" data-i18n="discWebText">Sites, catálogos digitais e aplicativos, desenhados e escritos à mão.</span>
+            <span class="craft-title" data-i18n="discWeb">Websites &amp; apps</span>
+            <span class="craft-text" data-i18n="discWebText">Websites, digital catalogs and applications, designed and hand-coded.</span>
             <span class="craft-count"></span>
           </button>
         </li>
@@ -92,8 +95,8 @@
           <button class="craft" type="button" data-filter="content">
             <svg class="craft-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 16v20"/><path d="M24 19C18 9 6 9 8 19c1 6 10 6 16 4M24 19c6-10 18-10 16 0-1 6-10 6-16 4M24 25c-6 2-12 8-8 12 3 2 7-4 8-8M24 25c6 2 12 8 8 12-3 2-7-4-8-8M24 16l-4-6M24 16l4-6"/></svg>
             <span class="craft-n">iii.</span>
-            <span class="craft-title" data-i18n="discContent">Conteúdo social</span>
-            <span class="craft-text" data-i18n="discContentText">Planejamento editorial, layouts e vídeos curtos para as redes.</span>
+            <span class="craft-title" data-i18n="discContent">Social content</span>
+            <span class="craft-text" data-i18n="discContentText">Editorial planning, layouts and short-form video for social media.</span>
             <span class="craft-count"></span>
           </button>
         </li>
@@ -106,16 +109,16 @@
     <section class="work" id="trabalhos" aria-labelledby="work-title" data-swarm>
       <div class="work-head">
         <div class="reveal">
-          <p class="label label-light"><span class="label-dot" aria-hidden="true"></span><span data-i18n="workLabel">Trabalhos selecionados</span></p>
-          <h2 id="work-title"><span data-i18n="workTitle">Marcas que ajudei</span> <em data-i18n="workTitleEm">a construir.</em></h2>
+          <p class="label label-light"><span class="label-dot" aria-hidden="true"></span><span data-i18n="workLabel">Selected work</span></p>
+          <h2 id="work-title"><span data-i18n="workTitle">Brands I helped</span> <em data-i18n="workTitleEm">build.</em></h2>
         </div>
         <div class="work-side reveal">
-          <p data-i18n="workLead">Cada marca com sua própria identidade. Abra um projeto para ver o contexto, o que foi feito e o material entregue.</p>
-          <div class="filters" role="group" aria-label="Filtrar projetos" data-i18n-attr="aria-label:filterLabel">
-            <button type="button" data-filter="all" aria-pressed="true"><span data-i18n="fAll">Todos</span></button>
-            <button type="button" data-filter="identity" aria-pressed="false"><span data-i18n="fId">Identidade</span></button>
+          <p data-i18n="workLead">Each brand with its own identity. Open a project to see its context, what was done and the material delivered.</p>
+          <div class="filters" role="group" aria-label="Filter projects" data-i18n-attr="aria-label:filterLabel">
+            <button type="button" data-filter="all" aria-pressed="true"><span data-i18n="fAll">All</span></button>
+            <button type="button" data-filter="identity" aria-pressed="false"><span data-i18n="fId">Identity</span></button>
             <button type="button" data-filter="web" aria-pressed="false"><span data-i18n="fWeb">Web</span></button>
-            <button type="button" data-filter="content" aria-pressed="false"><span data-i18n="fContent">Conteúdo</span></button>
+            <button type="button" data-filter="content" aria-pressed="false"><span data-i18n="fContent">Content</span></button>
           </div>
         </div>
       </div>
@@ -123,9 +126,9 @@
       <ul class="brands" id="brands"></ul>
       <noscript>
         <ul class="noscript-list">
-          <li><a href="https://licyafreoli.github.io/cmpisos/">CM Pisos — site e catálogo</a></li>
+          <li><a href="https://licyafreoli.github.io/cmpisos/">CM Pisos — website &amp; catalog</a></li>
           <li><a href="https://instagram.com/reismarcasepatentes">Reis Marcas e Patentes — branding</a></li>
-          <li><a href="https://github.com/licyafreoli/portfolio">Portfólio completo no GitHub</a></li>
+          <li><a href="https://github.com/licyafreoli/portfolio">Full portfolio on GitHub</a></li>
         </ul>
       </noscript>
     </section>
@@ -136,33 +139,33 @@
     <section class="about" id="sobre" aria-labelledby="about-title" data-leaves>
       <div class="about-grid">
         <header class="about-lead reveal">
-          <p class="label"><span class="label-dot" aria-hidden="true"></span><span data-i18n="aboutLabel">Sobre</span></p>
-          <h2 id="about-title"><span data-i18n="aboutTitle">Design encontra</span> <em data-i18n="aboutTitleEm">desenvolvimento.</em></h2>
+          <p class="label"><span class="label-dot" aria-hidden="true"></span><span data-i18n="aboutLabel">About</span></p>
+          <h2 id="about-title"><span data-i18n="aboutTitle">Design meets</span> <em data-i18n="aboutTitleEm">development.</em></h2>
         </header>
         <figure class="portrait reveal">
           <picture>
             <source type="image/webp" srcset="assets/licya-retrato-520.webp 520w, assets/licya-retrato.webp 880w" sizes="(max-width: 760px) 88vw, (max-width: 1100px) 38vw, 300px">
-            <img src="assets/licya-retrato.jpg" srcset="assets/licya-retrato-520.jpg 520w, assets/licya-retrato.jpg 880w" sizes="(max-width: 760px) 88vw, (max-width: 1100px) 38vw, 300px" width="880" height="1100" loading="lazy" decoding="async" alt="Licya Oliveira à noite, sorrindo, com as luzes da cidade ao fundo" data-i18n-attr="alt:portraitAlt">
+            <img src="assets/licya-retrato.jpg" srcset="assets/licya-retrato-520.jpg 520w, assets/licya-retrato.jpg 880w" sizes="(max-width: 760px) 88vw, (max-width: 1100px) 38vw, 300px" width="880" height="1100" loading="lazy" decoding="async" alt="Licya Oliveira at night, smiling, with the city lights behind her" data-i18n-attr="alt:portraitAlt">
           </picture>
-          <figcaption><b>Licya Oliveira</b><span data-i18n="portraitCap">Design &amp; desenvolvimento</span></figcaption>
+          <figcaption><b>Licya Oliveira</b><span data-i18n="portraitCap">Design &amp; development</span></figcaption>
         </figure>
         <div class="about-text reveal">
-          <p class="about-big" data-i18n="aboutBig">Crio identidades e construo sites para negócios. Muitas vezes o trabalho continua nos posts e nos materiais do dia a dia que dão vida à marca.</p>
-          <p data-i18n="aboutText">Estudo Análise e Desenvolvimento de Sistemas na Unichristus. Além dos projetos independentes, coordenei projetos técnicos, organizei entregas de conteúdo e apoiei o aprendizado em nuvem em comunidades estudantis.</p>
+          <p class="about-big" data-i18n="aboutBig">I design identities and build websites for businesses. My work often continues into the social posts and everyday materials that bring a brand to life.</p>
+          <p data-i18n="aboutText">I’m studying Systems Analysis and Development at Unichristus. Alongside independent projects, I’ve coordinated technical projects, organized content deliveries and supported cloud learning in student communities.</p>
           <ul class="facts">
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span><small data-i18n="factPlaceLabel">Base</small><b>Fortaleza, Ceará</b></span></li>
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9 12 4l9 5-9 5Z"/><path d="M7 11.5V16c3 2 7 2 10 0v-4.5"/></svg><span><small data-i18n="factStudyLabel">Formação</small><b data-i18n="factStudy">ADS · Unichristus</b></span></li>
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20C5 10 11 4 20 3c0 9-6 15-15 17Z"/><path d="M5 20 15 9"/></svg><span><small data-i18n="factSinceLabel">Projetos próprios</small><b data-i18n="factSince">Desde 2025</b></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span><small data-i18n="factPlaceLabel">Based in</small><b>Fortaleza, Ceará</b></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9 12 4l9 5-9 5Z"/><path d="M7 11.5V16c3 2 7 2 10 0v-4.5"/></svg><span><small data-i18n="factStudyLabel">Studies</small><b data-i18n="factStudy">Systems Analysis · Unichristus</b></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20C5 10 11 4 20 3c0 9-6 15-15 17Z"/><path d="M5 20 15 9"/></svg><span><small data-i18n="factSinceLabel">Own projects</small><b data-i18n="factSince">Since 2025</b></span></li>
           </ul>
         </div>
         <div class="path trail reveal">
-          <h3 data-i18n="expTitle">Trajetória</h3>
+          <h3 data-i18n="expTitle">Experience</h3>
           <ol>
-            <li><time data-i18n="exp1When">Desde 2025</time><b data-i18n="exp1">Projetos independentes</b><span data-i18n="exp1Text">Web, identidade visual e redes sociais</span></li>
-            <li><time data-i18n="exp2When">Abr–Out 2026</time><b>Amazon Web Services</b><span data-i18n="exp2Text">Campus Student Leader</span></li>
-            <li><time data-i18n="exp3When">Jan 2024–Ago 2026</time><b>Reis Marcas e Patentes</b><span data-i18n="exp3Text">Supervisora de Tecnologia</span></li>
-            <li><time data-i18n="exp4When">Jan–Abr 2026</time><b>Creative Moon</b><span data-i18n="exp4Text">Social Media</span></li>
-            <li><time>2024–2025</time><b>Infinity School</b><span data-i18n="exp5Text">Programa técnico Full Stack</span></li>
+            <li><time data-i18n="exp1When">Since 2025</time><b data-i18n="exp1">Independent projects</b><span data-i18n="exp1Text">Web, visual identity and social media</span></li>
+            <li><time data-i18n="exp2When">Apr–Oct 2026</time><b>Amazon Web Services</b><span data-i18n="exp2Text">Campus Student Leader</span></li>
+            <li><time data-i18n="exp3When">Jan 2024–Aug 2026</time><b>Reis Marcas e Patentes</b><span data-i18n="exp3Text">Technology Supervisor</span></li>
+            <li><time data-i18n="exp4When">Jan–Apr 2026</time><b>Creative Moon</b><span data-i18n="exp4Text">Social Media</span></li>
+            <li><time>2024–2025</time><b>Infinity School</b><span data-i18n="exp5Text">Full Stack Technical Program</span></li>
           </ol>
         </div>
       </div>
@@ -173,12 +176,12 @@
     <!-- Parada 5 · Clareira aberta -->
     <section class="contact" id="contato" aria-labelledby="contact-title" data-swarm>
       <div class="contact-inner reveal">
-        <p class="label label-light"><span class="label-dot" aria-hidden="true"></span><span data-i18n="contactLabel">Contato</span></p>
-        <h2 id="contact-title"><span data-i18n="contactTitle">Vamos criar algo</span> <em data-i18n="contactTitleEm">juntos?</em></h2>
-        <p class="contact-lead" data-i18n="contactLead">Tem um projeto de marca, site ou conteúdo em mente? Me conte no que você está trabalhando.</p>
+        <p class="label label-light"><span class="label-dot" aria-hidden="true"></span><span data-i18n="contactLabel">Contact</span></p>
+        <h2 id="contact-title"><span data-i18n="contactTitle">Shall we create something</span> <em data-i18n="contactTitleEm">together?</em></h2>
+        <p class="contact-lead" data-i18n="contactLead">Have a brand, website or content project in mind? Tell me what you’re working on.</p>
         <a class="mail" href="mailto:rossana.licyarl@gmail.com?subject=Projeto%20com%20Licya">rossana.licyarl@gmail.com</a>
         <div class="contact-actions">
-          <a class="btn btn-light" href="mailto:rossana.licyarl@gmail.com?subject=Projeto%20com%20Licya" data-i18n="contactCta">Enviar um e-mail</a>
+          <a class="btn btn-light" href="mailto:rossana.licyarl@gmail.com?subject=Projeto%20com%20Licya" data-i18n="contactCta">Send an email</a>
           <button class="btn btn-outline copy" type="button" data-copy="rossana.licyarl@gmail.com"><span class="copy-state">Copiar endereço</span></button>
         </div>
         <ul class="socials">
@@ -188,7 +191,7 @@
       </div>
       <footer class="foot">
         <span>© <span id="year">2026</span> Licya Oliveira</span>
-        <span data-i18n="footer">Design &amp; desenvolvimento · Fortaleza, BR</span>
+        <span data-i18n="footer">Design &amp; development · Fortaleza, BR</span>
         <button class="motion-toggle" type="button" aria-pressed="false">Reduzir animações</button>
       </footer>
     </section>
@@ -196,23 +199,17 @@
 
 
   <!-- Paradas da jornada -->
-  <nav class="rail" aria-label="Paradas da jornada" data-i18n-attr="aria-label:railLabel">
+  <nav class="rail" aria-label="Journey" data-i18n-attr="aria-label:railLabel">
     <ol>
-      <li><a href="#inicio"><i></i><span><b>01</b> <span data-i18n="rail1">Borda</span></span></a></li>
-      <li><a href="#pratica"><i></i><span><b>02</b> <span data-i18n="rail2">Trilha</span></span></a></li>
-      <li><a href="#trabalhos"><i></i><span><b>03</b> <span data-i18n="rail3">Rio</span></span></a></li>
-      <li><a href="#sobre"><i></i><span><b>04</b> <span data-i18n="rail4">Trajetória</span></span></a></li>
-      <li><a href="#contato"><i></i><span><b>05</b> <span data-i18n="rail5">Clareira</span></span></a></li>
+      <li><a href="#inicio"><i></i><span><b>01</b> <span data-i18n="rail1">Edge</span></span></a></li>
+      <li><a href="#pratica"><i></i><span><b>02</b> <span data-i18n="rail2">Trail</span></span></a></li>
+      <li><a href="#trabalhos"><i></i><span><b>03</b> <span data-i18n="rail3">River</span></span></a></li>
+      <li><a href="#sobre"><i></i><span><b>04</b> <span data-i18n="rail4">Path</span></span></a></li>
+      <li><a href="#contato"><i></i><span><b>05</b> <span data-i18n="rail5">Clearing</span></span></a></li>
     </ol>
   </nav>
 
   <!-- Seletor temporário para comparar as três versões. Remover depois da escolha. -->
-  <nav class="versions" aria-label="Versões do portfólio" data-i18n-attr="aria-label:versionsLabel">
-    <span data-i18n="versions">Versões</span>
-    <a href="anterior/" title="I · Primeira versão">I</a>
-    <a href="horizonte/" title="II · Horizonte">II</a>
-    <a href="./" title="III · Floresta" aria-current="page">III</a>
-  </nav>
 
   <!-- Projeto (painel lateral) -->
   <dialog class="sheet" id="case" aria-labelledby="case-title">
@@ -223,25 +220,25 @@
           <p class="sheet-kind"></p>
           <h2 id="case-title"></h2>
         </div>
-        <button class="sheet-close" type="button" aria-label="Fechar projeto" data-i18n-attr="aria-label:close"><span aria-hidden="true"></span></button>
+        <button class="sheet-close" type="button" aria-label="Close project" data-i18n-attr="aria-label:close"><span aria-hidden="true"></span></button>
       </header>
       <div class="sheet-body">
         <p class="sheet-intro"></p>
         <dl class="sheet-facts">
-          <div><dt data-i18n="ctxLabel">Contexto</dt><dd class="case-brief"></dd></div>
-          <div><dt data-i18n="doneLabel">O que foi feito</dt><dd class="case-detail"></dd></div>
-          <div><dt data-i18n="itemsLabel">Entregas</dt><dd class="case-items"></dd></div>
-          <div><dt data-i18n="paletteLabel">Cores da marca</dt><dd class="case-palette"></dd></div>
+          <div><dt data-i18n="ctxLabel">Context</dt><dd class="case-brief"></dd></div>
+          <div><dt data-i18n="doneLabel">What was done</dt><dd class="case-detail"></dd></div>
+          <div><dt data-i18n="itemsLabel">Deliverables</dt><dd class="case-items"></dd></div>
+          <div><dt data-i18n="paletteLabel">Brand colors</dt><dd class="case-palette"></dd></div>
         </dl>
         <figure class="sheet-figure">
           <div class="sheet-art"><img alt="" id="case-img"></div>
           <figcaption id="case-caption"></figcaption>
         </figure>
-        <div class="sheet-views" role="group" aria-label="Vistas do projeto" data-i18n-attr="aria-label:viewsLabel"></div>
+        <div class="sheet-views" role="group" aria-label="Project views" data-i18n-attr="aria-label:viewsLabel"></div>
         <div class="sheet-links"></div>
-        <nav class="sheet-nav" aria-label="Outros projetos" data-i18n-attr="aria-label:otherProjects">
-          <button type="button" class="case-prev"><small data-i18n="prev">Anterior</small><span class="case-prev-name"></span></button>
-          <button type="button" class="case-next"><small data-i18n="next">Próximo</small><span class="case-next-name"></span></button>
+        <nav class="sheet-nav" aria-label="Other projects" data-i18n-attr="aria-label:otherProjects">
+          <button type="button" class="case-prev"><small data-i18n="prev">Previous</small><span class="case-prev-name"></span></button>
+          <button type="button" class="case-next"><small data-i18n="next">Next</small><span class="case-next-name"></span></button>
         </nav>
       </div>
     </div>
@@ -255,6 +252,7 @@
       "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
     } }
   </script>
+  <script src="i18n.js" defer></script>
   <script src="app.js" defer></script>
   <script src="forest.js" defer></script>
   <script type="module" src="world.js"></script>

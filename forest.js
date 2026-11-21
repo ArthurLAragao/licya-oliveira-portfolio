@@ -103,7 +103,7 @@ function bindCards(){
     a.addEventListener('pointerenter', () => {
       hoverCard = a;
       if (!on() || !fine) return;
-      pillOn = true; $('span', pill).textContent = P().lang?.() === 'en' ? 'View project' : 'Ver projeto';
+      pillOn = true; $('span', pill).textContent = P().t ? P().t('viewProject') : 'View project';
       pill.classList.add('is-on'); a.classList.add('is-tilting');
     });
     a.addEventListener('pointermove', e => {
@@ -165,10 +165,12 @@ const blueGlow = sprite([[0,'rgba(120,200,255,.55)'],[.4,'rgba(95,180,255,.18)']
    5. CAMADA VIVA — borboletas, folhas e pólen sobre a página
    ============================================================ */
 const life = $('.life'), lg = life.getContext('2d');
-let LW = 0, LH = 0;
+let LW = 0, LH = 0, BF = 1;
+// borboletas proporcionais à tela: discretas no celular, um pouco maiores no computador
 function sizeLife(){
   const dpr = Math.min(devicePixelRatio || 1, 1.5);
-  LW = innerWidth; LH = innerHeight; life.width = Math.round(LW * dpr); life.height = Math.round(LH * dpr);
+  LW = innerWidth; LH = innerHeight;
+  BF = LW < 760 ? .5 : LW < 1100 ? .58 : .66; life.width = Math.round(LW * dpr); life.height = Math.round(LH * dpr);
   lg.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 const UPPER = new Path2D('M0 -2C5 -15 20 -20 22 -9C23 -2 12 1 0 1Z');
@@ -195,7 +197,7 @@ const MAX_FOLLOW = fine ? 14 : 6;
 let members = 0, travel = 0, lastPX = 0, lastPY = 0;
 function addButterfly(x, y, mode, extra = {}){
   const b = Object.assign({ x, y, vx:rand(-1, 1), vy:rand(-1.6, -.4), rot:0, size:rand(.7, 1.05), ph:rand(0, TAU),
-    alpha:0, mode, pal:PALETTES[(Math.random() * PALETTES.length) | 0], orbit:rand(26, 70), os:rand(.9, 1.7) * (Math.random() < .5 ? -1 : 1),
+    alpha:0, mode, pal:PALETTES[(Math.random() * PALETTES.length) | 0], orbit:rand(20, 52), os:rand(.9, 1.7) * (Math.random() < .5 ? -1 : 1),
     born:performance.now(), wx:rand(0, LW), wy:rand(0, LH), retarget:0, idx:0, member:false }, extra);
   if (mode === 'follow') { b.member = true; b.idx = members++; }
   bfs.push(b); return b;
@@ -223,8 +225,9 @@ function drawButterfly(b){
   let dr = target - b.rot; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); b.rot += dr * .08;
   lg.save(); lg.translate(b.x, b.y);
   // brilho difuso por baixo
-  lg.globalAlpha = b.alpha * .5; const gs = 70 * b.size; lg.drawImage(blueGlow, -gs / 2, -gs / 2, gs, gs);
-  lg.rotate(b.rot); lg.scale(b.size, b.size); lg.globalAlpha = b.alpha;
+  const sz = b.size * BF;
+  lg.globalAlpha = b.alpha * .5; const gs = 70 * sz; lg.drawImage(blueGlow, -gs / 2, -gs / 2, gs, gs);
+  lg.rotate(b.rot); lg.scale(sz, sz); lg.globalAlpha = b.alpha;
   for (const side of [1, -1]) {
     lg.save(); lg.scale(side * flap, 1);
     lg.fillStyle = b.pal.edge; lg.fill(LOWER); lg.fill(UPPER);
@@ -331,7 +334,7 @@ const leafObs = new IntersectionObserver(es => {
 $$('[data-leaves]').forEach(s => leafObs.observe(s));
 
 document.addEventListener('pointerdown', e => {
-  if (!on() || e.target.closest('a,button,input,dialog,.versions')) return;
+  if (!on() || e.target.closest('a,button,input,dialog,.lang-menu')) return;
   if (!e.target.closest('[data-swarm]')) return;
   burst(e.clientX, e.clientY, fine ? 6 : 4);
 });

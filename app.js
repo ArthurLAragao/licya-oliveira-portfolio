@@ -122,45 +122,22 @@ const works = [
     links:[['https://www.instagram.com/aguasclarapiscina/reels/',{pt:'Ver os reels',en:'View the reels'}]],
     views:[['aguas',{pt:'Perfil e feed',en:'Profile & feed'},{pt:'O perfil estruturado e exemplos de vídeos curtos do feed.',en:'The structured profile and short-form examples from the feed.'}]]}
 ];
-const groupName = { identity:{pt:'Identidade',en:'Identity'}, web:{pt:'Web',en:'Web'}, content:{pt:'Conteúdo',en:'Content'} };
-
-const EN = {
-  skip:'Skip to content', navLabel:'Main', navWork:'Work', navAbout:'About', navContact:'Contact', langLabel:'Mudar para português',
-  heroEyebrow:'Design & development · Fortaleza, Brazil',
-  heroLead:'Visual identities, websites and content for brands that want to be remembered — from the first sketch to the last line of code.',
-  heroCta:'See the work', heroCta2:'Start a project',
-  manifestoLabel:'What I do',
-  manifesto:'I create visual identities, build websites and look after the content that keeps each brand alive. The same eye follows the business from the first sketch to published code — calmly, with intention and attention to detail.',
-  discId:'Visual identity', discIdText:'Wordmarks, palettes and applications that give a brand a recognizable face.',
-  discWeb:'Websites & apps', discWebText:'Websites, digital catalogs and applications, designed and hand-written.',
-  discContent:'Social content', discContentText:'Editorial planning, layouts and short-form video for social media.',
-  workLabel:'Selected work', workTitle:'Brands I helped', workTitleEm:'build.',
-  workLead:'Each brand with its own identity. Open a project to see its context, what was done and the material delivered.',
-  filterLabel:'Filter projects', fAll:'All', fId:'Identity', fWeb:'Web', fContent:'Content',
-  aboutLabel:'About', aboutTitle:'Design meets', aboutTitleEm:'development.',
-  portraitAlt:'Licya Oliveira at night, smiling, with the city lights behind her', portraitCap:'Design & development',
-  aboutBig:'I design identities and build websites for businesses. My work often continues into the social posts and everyday materials that bring a brand to life.',
-  aboutText:'I’m studying Systems Analysis and Development at Unichristus. Alongside freelance work, I’ve coordinated technical projects, organized content deliveries and supported cloud learning in student communities.',
-  expTitle:'Experience', exp1When:'Since 2025', exp1:'Independent projects', exp1Text:'Web, visual identity and social media',
-  exp2When:'Apr–Oct 2026', exp2Text:'Campus Student Leader', exp3When:'Jan 2024–Aug 2026', exp3Text:'Technology Supervisor',
-  exp4When:'Jan–Apr 2026', exp4Text:'Social Media', exp5Text:'Full Stack Technical Program',
-  contactLabel:'Contact', contactTitle:'Shall we create something', contactTitleEm:'together?',
-  contactLead:'Have a brand, website or content project in mind? Tell me what you’re working on.', contactCta:'Send an email',
-  footer:'Design & development · Fortaleza, BR',
-  cue:'Scroll into the forest', railLabel:'Journey', rail1:'Edge', rail2:'Trail', rail3:'River', rail4:'Path', rail5:'Clearing', versions:'Versions', versionsLabel:'Portfolio versions',
-  factPlaceLabel:'Based in', factStudyLabel:'Studies', factStudy:'Systems Analysis · Unichristus', factSinceLabel:'Own projects', factSince:'Since 2025',
-  viewsLabel:'Project views', close:'Close project', ctxLabel:'Context', doneLabel:'What was done', itemsLabel:'Deliverables', paletteLabel:'Brand colors',
-  otherProjects:'Other projects', prev:'Previous', next:'Next'
-};
-const STR = {
-  pt:{ copy:'Copiar endereço', copied:'Endereço copiado', motionOff:'Reduzir animações', motionOn:'Ativar animações', open:'Abrir projeto',
-       projects:n => n === 1 ? '1 projeto' : `${n} projetos`, showing:(n,g) => `Mostrando ${n === 1 ? '1 projeto' : n + ' projetos'}${g ? ' em ' + g : ''}` },
-  en:{ copy:'Copy address', copied:'Address copied', motionOff:'Reduce motion', motionOn:'Turn motion on', open:'Open project',
-       projects:n => n === 1 ? '1 project' : `${n} projects`, showing:(n,g) => `Showing ${n === 1 ? '1 project' : n + ' projects'}${g ? ' in ' + g : ''}` }
-};
-let lang = store.get('lang') === 'en' ? 'en' : 'pt';
-const t = k => STR[lang][k];
-const L = o => (o && typeof o === 'object') ? o[lang] : o;
+/* ---------------- idiomas ----------------
+   Inglês é o principal; pt, es, de, fr e it vêm de i18n.js. Os textos dos projetos em pt/en
+   estão acima e recebem aqui as outras quatro línguas. */
+const I18N = window.LICYA_I18N;
+const CODES = I18N.LANGS.map(l => l.code);
+works.forEach(w => {
+  const x = I18N.works[w.id]; if (!x) return;
+  ['kind', 'intro', 'brief', 'detail', 'items'].forEach(f => Object.assign(w[f], x[f]));
+  (x.views || []).forEach(([label, cap], i) => { if (w.views[i]) { Object.assign(w.views[i][1], label); Object.assign(w.views[i][2], cap); } });
+  (x.links || []).forEach((label, i) => { if (w.links && w.links[i]) Object.assign(w.links[i][1], label); });
+});
+const groupName = I18N.groups;
+let lang = CODES.includes(store.get('lang')) ? store.get('lang') : 'en';
+const t = k => (I18N.str[lang] || I18N.str.en)[k];
+const tx = k => (I18N.ui[lang] && I18N.ui[lang][k] != null) ? I18N.ui[lang][k] : I18N.ui.en[k];
+const L = o => (o && typeof o === 'object') ? (o[lang] != null ? o[lang] : o.en) : o;
 
 /* ---------------- selo da marca ---------------- */
 function seal(w){
@@ -171,20 +148,18 @@ function seal(w){
 }
 
 /* ---------------- i18n ---------------- */
-const original = new Map(), originalAttr = new Map();
-$$('[data-i18n]').forEach(el => original.set(el, el.innerHTML));
-$$('[data-i18n-attr]').forEach(el => { const [a] = el.dataset.i18nAttr.split(':'); originalAttr.set(el, el.getAttribute(a)); });
+const langBtn = $('.lang'), langList = $('.lang-list');
+langList.innerHTML = I18N.LANGS.map(l => `<li><button type="button" data-lang="${l.code}" lang="${l.html}"><b>${l.code.toUpperCase()}</b>${l.name}</button></li>`).join('');
 function applyLang(){
-  root.lang = lang === 'en' ? 'en' : 'pt-BR';
-  $$('[data-i18n]').forEach(el => {
-    const k = el.dataset.i18n;
-    if (lang === 'en' && EN[k]) el.textContent = EN[k]; else el.innerHTML = original.get(el);
-  });
-  $$('[data-i18n-attr]').forEach(el => {
-    const [a, k] = el.dataset.i18nAttr.split(':');
-    el.setAttribute(a, lang === 'en' && EN[k] ? EN[k] : originalAttr.get(el));
-  });
-  document.title = lang === 'en' ? 'Licya Oliveira — Design & development' : 'Licya Oliveira — Design & desenvolvimento';
+  const info = I18N.LANGS.find(l => l.code === lang);
+  root.lang = info.html;
+  $$('[data-i18n]').forEach(el => { const v = tx(el.dataset.i18n); if (v != null) el.textContent = v; });
+  $$('[data-i18n-attr]').forEach(el => { const [a, k] = el.dataset.i18nAttr.split(':'); const v = tx(k); if (v != null) el.setAttribute(a, v); });
+  const m = I18N.meta[lang] || I18N.meta.en;
+  document.title = m.title;
+  $('meta[name="description"]')?.setAttribute('content', m.desc);
+  $('.lang-cur').textContent = lang.toUpperCase();
+  $$('button', langList).forEach(b => b.setAttribute('aria-current', String(b.dataset.lang === lang)));
   $('.copy-state').textContent = t('copy');
   splitManifesto();
   updateMotionLabel();
@@ -193,7 +168,25 @@ function applyLang(){
   if (sheet.open && current) fillCase(current, viewIndex);
   document.dispatchEvent(new CustomEvent('portfolio:lang'));
 }
-$('.lang').addEventListener('click', () => { lang = lang === 'en' ? 'pt' : 'en'; store.set('lang', lang); applyLang(); });
+// menu de idiomas: abre com clique/Enter, setas percorrem, Esc fecha e devolve o foco
+function setLangOpen(open, focus){
+  langList.hidden = !open; langBtn.setAttribute('aria-expanded', String(open));
+  if (open) ($('[aria-current="true"]', langList) || $('button', langList)).focus();
+  else if (focus) langBtn.focus();
+}
+langBtn.addEventListener('click', () => setLangOpen(langList.hidden));
+langList.addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]'); if (!b) return;
+  lang = b.dataset.lang; store.set('lang', lang); applyLang(); setLangOpen(false, true);
+});
+langList.addEventListener('keydown', e => {
+  const items = $$('button', langList), i = items.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus(); }
+  else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); items[e.key === 'Home' ? 0 : items.length - 1].focus(); }
+  else if (e.key === 'Escape') { e.preventDefault(); setLangOpen(false, true); }
+  else if (e.key === 'Tab') setLangOpen(false);
+});
+document.addEventListener('click', e => { if (!langList.hidden && !e.target.closest('.lang-menu')) setLangOpen(false); });
 
 /* ---------------- movimento ---------------- */
 const motionBtn = $('.motion-toggle');
@@ -426,7 +419,7 @@ const revealObs = new IntersectionObserver(es => es.forEach(e => {
 $$('.reveal').forEach(el => revealObs.observe(el));
 
 /* ---------------- início ---------------- */
-window.LicyaPortfolio = { works, seal, lang: () => lang };
+window.LicyaPortfolio = { works, seal, lang: () => lang, t: tx };
 $('#year').textContent = new Date().getFullYear();
 applyLang();
 onScroll();

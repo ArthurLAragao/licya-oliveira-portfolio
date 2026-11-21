@@ -1367,18 +1367,6 @@ const debug = { s:null, onFrame:null,
     needs = true; tick(last + 16);
     return url;
   } };
-// ?shot=nome-da-parada|metros — enquadra a câmera numa parada fixa (revisão de quadros)
-{
-  const q = new URLSearchParams(location.search), at = q.get('at');
-  // ?at=seção — simula a rolagem até a seção (a captura sem interface não acompanha scroll)
-  if (at) { const el = document.getElementById(at); if (el) { const y = el.getBoundingClientRect().top + scrollY + (+q.get('dy') || 0); $('main').style.transform = `translateY(${-y}px)`; debug.s = scrollToS(y); } }
-  const shot = q.get('shot');
-  if (shot) {
-    const named = { borda:S.start, trilha:S.manifesto, rio:S.riverStart + 6, rio2:(S.riverStart + S.riverEnd) / 2, trajetoria:S.aboutStart + 14, clareira:S.end };
-    debug.s = named[shot] ?? +shot;
-    if (new URLSearchParams(location.search).has('clean')) root.classList.add('shot-clean');
-  }
-}
 requestAnimationFrame(frame);
 window.LicyaWorld = { scene, camera, renderer, composer, trailLen, S, debug, get s(){ return sNow; } };
 }

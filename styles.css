@@ -89,10 +89,11 @@ em{font-style:italic}
 .topbar nav a{position:relative;text-decoration:none;padding:.55rem 0}
 .topbar nav a::after{content:"";position:absolute;left:50%;bottom:.3rem;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor;opacity:0;transform:translateY(4px);transition:opacity 400ms,transform 400ms var(--ease)}
 .topbar nav a:hover::after,.topbar nav a[aria-current]::after{opacity:1;transform:none}
-.lang{display:inline-flex;align-items:center;gap:.25rem;min-height:44px;padding:0 .2rem;font-size:.8rem;letter-spacing:.08em}
-.lang span{opacity:.45;transition:opacity 300ms}
-.lang .lang-sep{opacity:.3}
-html[lang="pt-BR"] .lang-pt,html[lang="en"] .lang-en{opacity:1}
+.lang{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:0 .7rem;border-radius:99px;font-size:.78rem;letter-spacing:.1em;border:1px solid transparent;transition:background-color 300ms,border-color 300ms}
+.lang:hover,.lang[aria-expanded="true"]{background:rgba(230,244,241,.08);border-color:rgba(214,240,238,.18)}
+.lang svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.lang .lang-caret{width:10px;height:10px;opacity:.7;transition:transform 300ms var(--ease)}
+.lang[aria-expanded="true"] .lang-caret{transform:rotate(180deg)}
 
 
 /* ==========================================================
@@ -634,11 +635,6 @@ main>section,.hero,.work,.about,.contact{background:none;border-radius:0}
 .sheet-links a:hover{background:var(--cobalt)}
 
 /* ---------------- seletor de versões (para comparar) ---------------- */
-.versions{position:fixed;left:1rem;bottom:1rem;z-index:45;display:flex;align-items:center;gap:.2rem;padding:.3rem;border-radius:99px;background:rgba(4,13,22,.78);color:#e6f4f1;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 30px -10px rgba(0,0,0,.6),inset 0 0 0 1px rgba(214,240,238,.14);font:400 .68rem/1 var(--sans)}
-.versions>span{padding:0 .5rem 0 .7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
-.versions a{display:grid;place-items:center;min-width:36px;min-height:36px;padding:0 .6rem;border-radius:99px;text-decoration:none;font:italic 400 1rem/1 var(--serif);transition:background-color 300ms}
-.versions a:hover{background:rgba(230,244,241,.12)}
-.versions a[aria-current]{background:#e6f4f1;color:var(--navy)}
 
 /* ---------------- movimento desligado ---------------- */
 html[data-motion=off] .walk{height:28vh}
@@ -665,13 +661,11 @@ html[data-motion=off] .trail li>*{opacity:1;transform:none}
   .contact{min-height:auto}
   .foot{margin-top:clamp(8rem,30vh,14rem)}
 }
-/* revisão de quadros do 3D (?shot=…&clean) */
-.shot-clean main,.shot-clean .topbar,.shot-clean .rail,.shot-clean .versions,.shot-clean .life{visibility:hidden}
 .brand{white-space:nowrap}
 /* links do contato legíveis sobre a névoa clara da clareira */
 .contact .socials a{color:#e6f4f1;text-shadow:0 1px 14px rgba(3,10,16,.85),0 0 2px rgba(3,10,16,.6)}
 .contact .socials a:hover{color:#fff}
-.foot{text-shadow:0 1px 10px rgba(3,10,16,.8);padding-bottom:5.5rem;background:none}   /* espaço para o seletor de versões fixo */
+.foot{text-shadow:0 1px 10px rgba(3,10,16,.8);padding-bottom:2.4rem;background:none}
 
 /* ---------------- retrato (Sobre) ----------------
    Fica entre o título e o texto: a pessoa conhece quem fez depois de ver os trabalhos no rio.
@@ -712,5 +706,18 @@ html[data-motion=off] .portrait img{transition:none}
 .rail a[aria-current]>span{opacity:0;transform:translateX(6px)}
 .rail:hover a>span,.rail a:focus-visible>span{opacity:1;transform:none}
 .rail ol{justify-items:end}
-/* seletor de versões (temporário) mais discreto no celular */
-@media (max-width:760px){.versions>span{display:none}.versions{left:.75rem;bottom:.75rem;padding:.2rem}.versions a{min-width:34px;min-height:34px}}
+
+/* ---------------- menu de idiomas ---------------- */
+.lang-menu{position:relative}
+.lang-list{position:absolute;right:0;top:calc(100% + .5rem);z-index:60;min-width:12.5rem;padding:.4rem;border-radius:18px;
+  background:rgba(6,18,28,.9);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  border:1px solid var(--glass-line);box-shadow:0 30px 60px -30px rgba(0,0,0,.9);display:grid;gap:.1rem;
+  transform-origin:top right;animation:lang-in 260ms var(--ease-expo)}
+.lang-list[hidden]{display:none}
+.lang-list button{display:flex;align-items:center;gap:.8rem;width:100%;min-height:42px;padding:0 .8rem;border-radius:12px;color:#e6f4f1;font-size:.92rem;text-align:left;transition:background-color 200ms}
+.lang-list button b{min-width:1.7rem;font-size:.68rem;font-weight:500;letter-spacing:.14em;color:var(--on-night-muted)}
+.lang-list button:hover,.lang-list button:focus-visible{background:rgba(230,244,241,.1);outline:none}
+.lang-list button[aria-current="true"]{background:rgba(127,245,230,.12);color:#fff}
+.lang-list button[aria-current="true"] b{color:var(--river)}
+@keyframes lang-in{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
+html[data-motion=off] .lang-list{animation:none}
