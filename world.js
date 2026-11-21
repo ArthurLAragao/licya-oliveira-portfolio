@@ -192,7 +192,7 @@ const moon = new THREE.DirectionalLight('#cdeeff', 2.6);
 moon.castShadow = !LOW;
 moon.shadow.mapSize.set(2048, 2048);
 Object.assign(moon.shadow.camera, { left:-46, right:46, top:46, bottom:-46, near:1, far:240 });
-moon.shadow.bias = -.0004; moon.shadow.normalBias = .05;
+moon.shadow.bias = -.0006; moon.shadow.normalBias = .09;
 scene.add(moon, moon.target);
 const warm = [new THREE.PointLight('#ffe7a8', 0, 14, 1.6), new THREE.PointLight('#ffe7a8', 0, 14, 1.6)];
 warm.forEach(l => scene.add(l));
@@ -234,11 +234,17 @@ const dirtTex = canvasTex(256, 1024, (g, w, h) => {
   for (let i = 0; i < 120; i++) { const x = R0() * w, y = 14 + R0() * (h - 28), a = R0() * TAU, l = 5 + R0() * 6; g.save(); g.translate(x, y); g.rotate(a);
     g.fillStyle = `rgba(${130 + R0() * 50 | 0},${84 + R0() * 30 | 0},${48 + R0() * 20 | 0},.75)`; g.beginPath(); g.ellipse(0, 0, l, l * .42, 0, 0, TAU); g.fill();
     g.strokeStyle = 'rgba(60,40,26,.6)'; g.lineWidth = .6; g.beginPath(); g.moveTo(-l, 0); g.lineTo(l, 0); g.stroke(); g.restore(); }
-  for (let i = 0; i < 7; i++) {
-    const y = 60 + R0() * (h - 120), dy = (R0() - .5) * 70;
-    g.lineCap = 'round';
-    g.strokeStyle = 'rgba(52,36,26,.75)'; g.lineWidth = 3 + R0() * 4; g.beginPath(); g.moveTo(-10, y); g.bezierCurveTo(w * .3, y + dy, w * .6, y - dy * .5, w + 10, y + dy * .4); g.stroke();
-    g.strokeStyle = 'rgba(170,140,108,.35)'; g.lineWidth = 1; g.beginPath(); g.moveTo(-10, y - 1.5); g.bezierCurveTo(w * .3, y + dy - 1.5, w * .6, y - dy * .5 - 1.5, w + 10, y + dy * .4 - 1.5); g.stroke();
+  // raízes: poucas, tortas, saem de uma borda e afinam até sumir no meio da trilha
+  for (let i = 0; i < 2; i++) {
+    const left = i === 0, y0 = h * (.28 + i * .45), segs = 14;
+    let x = left ? -6 : w + 6, y = y0;
+    for (let k = 0; k < segs; k++) {
+      const t = k / segs, nx = x + (left ? 1 : -1) * (w * .42 / segs), ny = y + Math.sin(k * 1.3 + i) * 7 + (R0() - .5) * 5;
+      g.lineCap = 'round';
+      g.strokeStyle = `rgba(56,40,29,${.5 * (1 - t)})`; g.lineWidth = 6 * (1 - t * .85); g.beginPath(); g.moveTo(x, y); g.lineTo(nx, ny); g.stroke();
+      g.strokeStyle = `rgba(150,122,94,${.18 * (1 - t)})`; g.lineWidth = 1.2 * (1 - t); g.beginPath(); g.moveTo(x, y - 1.6 * (1 - t)); g.lineTo(nx, ny - 1.6 * (1 - t)); g.stroke();
+      x = nx; y = ny;
+    }
   }
   for (let i = 0; i < 520; i++) { const side = R0() < .5, x = side ? Math.pow(R0(), 2) * w * .22 : w - Math.pow(R0(), 2) * w * .22, y = R0() * h;
     g.fillStyle = `rgba(${48 + R0() * 30 | 0},${84 + R0() * 40 | 0},${62 + R0() * 26 | 0},${.45 + R0() * .4})`; g.beginPath(); g.arc(x, y, 1.5 + R0() * 4, 0, TAU); g.fill(); }
@@ -399,8 +405,9 @@ function ribbon(points, half, lift, mat, vScale){
 const dirtMat = new THREE.MeshStandardMaterial({ map:dirtTex, bumpMap:dirtTex, bumpScale:3.2, color:new THREE.Color(1.3, 1.08, .84), transparent:true, roughness:.92, depthWrite:false, polygonOffset:true, polygonOffsetFactor:-6, polygonOffsetUnits:-24 });
 {
   // a fita é interrompida onde a trilha cruza a água (ali há pedras)
+  // fica .17 acima do relevo: assim as dobras da malha não aparecem como linhas cruzando a trilha
   let run = [];
-  const flush = () => { if (run.length > 3) scene.add(ribbon(run, 1.45, .1, dirtMat, 9)); run = []; };
+  const flush = () => { if (run.length > 3) scene.add(ribbon(run, 1.45, .17, dirtMat, 9)); run = []; };
   trailPts.forEach(p => { if (riverDist(p.x, p.z) < RIVER_HALF + .6) flush(); else run.push(p); });
   flush();
 }
@@ -430,7 +437,7 @@ const waterFS = `
     float rip = sin(rd * 5.5 - rt * 7.) * exp(-rd * .4) * exp(-rt * 1.1) * step(0., rt) * step(rd, rt * 2.4 + .5);
     n = normalize(n + vec3((p.x - uRip.x), 0., (p.y - uRip.y)) / max(rd, .01) * rip * .35);
     vec3 V = normalize(cameraPosition - vW);
-    float fres = pow(1. - max(dot(n, V), 0.), 4.);
+    float fres = pow(clamp(1. - dot(n, V), 0., 1.), 4.);
     vec3 deep = vec3(.006,.045,.06), mid = vec3(.02,.17,.19), glowC = vec3(.33,.98,.9);
     vec3 col = mix(deep, mid, n1);
     vec3 R = reflect(-V, n);
@@ -440,7 +447,7 @@ const waterFS = `
     vec2 q = p * 2.1 + vec2(-uTime * .35 * uFlow, 0.); vec2 cell = floor(q); float h = hash(cell);
     float spark = (1. - smoothstep(0., .2, length(fract(q) - .5 + (vec2(hash(cell+3.), hash(cell+7.)) - .5) * .5))) * step(.94, h) * (.5 + .5 * sin(uTime * 2.6 + h * 60.));
     col += glowC * spark * 2.6;
-    col += glowC * pow(n2, 3.2) * .42;
+    col += glowC * pow(clamp(n2, 0., 1.), 3.2) * .42;
     for (int i = 0; i < ${lanternN}; i++){
       vec2 d = p - uLP[i].xz; float r = exp(-(d.x * d.x * 1.6 + d.y * d.y * .28));
       col += uLC[i] * r * (.55 + .5 * n2);
@@ -858,7 +865,7 @@ const flies = (() => {
       void main(){ vec3 p = position; float t = uTime * .55 + aSeed * 40.;
         p += vec3(sin(t * .7 + aSeed * 6.) * .9, sin(t * 1.1 + aSeed * 3.) * .4, cos(t * .6 + aSeed * 9.) * .9);
         vec4 mv = modelViewMatrix * vec4(p, 1.); gl_Position = projectionMatrix * mv;
-        float blink = pow(.5 + .5 * sin(t * 2.2 + aSeed * 50.), 3.);
+        float blink = pow(clamp(.5 + .5 * sin(t * 2.2 + aSeed * 50.), 0., 1.), 3.);
         gl_PointSize = (26. + 26. * blink) * uPR / -mv.z;
         vA = (.25 + .75 * blink) * (1. - smoothstep(22., 55., -mv.z)); }`,
     fragmentShader:`varying float vA; void main(){ float d = length(gl_PointCoord - .5);
@@ -901,7 +908,7 @@ const shaftMat = new THREE.ShaderMaterial({
   uniforms:{ uTime:U.uTime, uColor:{ value:new THREE.Color('#cfeee8') } },
   vertexShader:`varying vec2 vUv; varying vec3 vW; void main(){ vUv = uv; vec4 w = modelMatrix * vec4(position,1.); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
   fragmentShader:`uniform float uTime; uniform vec3 uColor; varying vec2 vUv; varying vec3 vW;
-    void main(){ float across = 1. - abs(vUv.x - .5) * 2.; float a = pow(across, 2.2) * smoothstep(0., .35, vUv.y) * (1. - smoothstep(.55, 1., vUv.y));
+    void main(){ float across = 1. - abs(vUv.x - .5) * 2.; float a = pow(clamp(across, 0., 1.), 2.2) * smoothstep(0., .35, vUv.y) * (1. - smoothstep(.55, 1., vUv.y));
       a *= .55 + .45 * sin(uTime * .35 + vW.x * .3 + vW.z * .2);
       float d = length(cameraPosition - vW); a *= smoothstep(4., 14., d) * (1. - smoothstep(60., 110., d));
       gl_FragColor = vec4(uColor * a * .085, 1.); }`
@@ -927,12 +934,17 @@ composer.addPass(new RenderPass(scene, camera));
 // filtro de segurança: um único pixel NaN/infinito (comum em GPUs reais, raro no software)
 // entraria no bloom e se espalharia pela tela inteira = flash preto. Aqui ele vira zero.
 composer.addPass(new ShaderPass({
-  uniforms:{ tDiffuse:{ value:null } },
+  uniforms:{ tDiffuse:{ value:null }, uTexel:{ value:new THREE.Vector2(1 / VW.w, 1 / VW.h) } },
   vertexShader:'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
-  fragmentShader:`uniform sampler2D tDiffuse; varying vec2 vUv;
-    void main(){ vec4 c = texture2D(tDiffuse, vUv);
-      if (any(isnan(c)) || any(isinf(c))) c = vec4(0., 0., 0., 1.);
-      gl_FragColor = vec4(clamp(c.rgb, 0., 64.), 1.); }`
+  fragmentShader:`uniform sampler2D tDiffuse; uniform vec2 uTexel; varying vec2 vUv;
+    bool bad(vec3 c){ return any(isnan(c)) || any(isinf(c)); }
+    void main(){ vec3 c = texture2D(tDiffuse, vUv).rgb;
+      // pixel inválido: usa a média dos vizinhos válidos (nunca um ponto preto)
+      if (bad(c)) { vec3 s = vec3(0.); float n = 0.;
+        for (int i = 0; i < 8; i++) { float a = float(i) * .785398; vec3 v = texture2D(tDiffuse, vUv + vec2(cos(a), sin(a)) * uTexel * 2.).rgb;
+          if (!bad(v)) { s += v; n += 1.; } }
+        c = n > 0. ? s / n : vec3(.02, .06, .07); }
+      gl_FragColor = vec4(clamp(c, 0., 64.), 1.); }`
 }));
 const bloom = new UnrealBloomPass(new THREE.Vector2(VW.w / 2, VW.h / 2), LOW ? .55 : .7, .6, .78);
 composer.addPass(bloom);
@@ -1045,6 +1057,203 @@ document.addEventListener('click', e => {
   cardOf(l.id)?.querySelector('a')?.click();
 });
 
+/* ---------------- bichos da mata ----------------
+   Vida de fundo, sem roubar a cena: corça e filhote na campina da borda, coruja num tronco
+   seco da trilha, peixes pulando no rio, coelho na segunda trilha, cervo pastando do outro lado
+   do lago e um bando de pássaros cruzando a lua. Tudo geometria simples feita aqui.
+   Movimento reduzido: cada bicho fica parado numa pose natural. */
+const animals = [];
+const furMat = (c) => new THREE.MeshStandardMaterial({ color:c, roughness:.92, metalness:0 });
+const cyl = (r0, r1, h, mat, seg = 7) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r1, r0, h, seg), mat); return m; };
+const shade = o => { o.traverse(c => { if (c.isMesh) { c.castShadow = !LOW; c.receiveShadow = false; } }); return o; };
+const ease = t => t * t * (3 - 2 * t);
+
+// veado: corpo, pescoço articulado, cabeça, quatro pernas com joelho, rabo; galhada opcional
+function makeDeer({ stag = false, size = 1 } = {}){
+  const fur = furMat(stag ? '#46372b' : '#4d3c2f'), dark = furMat('#221a15'), pale = furMat('#7d6d5c');
+  const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
+  const torso = new THREE.Mesh(new THREE.SphereGeometry(.5, 16, 12), fur); torso.scale.set(.36, .4, .92); torso.position.set(0, 1.02, 0); body.add(torso);
+  const rump = new THREE.Mesh(new THREE.SphereGeometry(.17, 12, 10), pale); rump.position.set(0, 1.05, -.44); rump.scale.set(.8, .9, .35); body.add(rump);
+  const tail = new THREE.Mesh(new THREE.ConeGeometry(.05, .16, 6), pale); tail.position.set(0, 1.14, -.5); tail.rotation.x = -2.4; body.add(tail);
+  const neck = new THREE.Group(); neck.position.set(0, 1.18, .38); body.add(neck);
+  const nk = cyl(.11, .075, .58, fur); nk.position.set(0, .26, .05); nk.rotation.x = .38; neck.add(nk);
+  const head = new THREE.Group(); head.position.set(0, .56, .16); neck.add(head);
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(.11, 12, 10), fur); skull.scale.set(.9, .9, 1.1); head.add(skull);
+  const snout = new THREE.Mesh(new THREE.ConeGeometry(.075, .26, 9), fur); snout.rotation.x = Math.PI / 2 + .35; snout.position.set(0, -.05, .17); head.add(snout);
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(.03, 8, 6), dark); nose.position.set(0, -.11, .29); head.add(nose);
+  for (const sx of [-1, 1]) {
+    const ear = new THREE.Mesh(new THREE.ConeGeometry(.045, .17, 6), fur); ear.scale.z = .45; ear.position.set(sx * .1, .1, -.02); ear.rotation.z = -sx * .9; head.add(ear);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(.018, 6, 5), dark); eye.position.set(sx * .075, .02, .07); head.add(eye);
+    if (stag) {
+      const beam = cyl(.018, .01, .42, pale, 5); beam.position.set(sx * .1, .3, -.06); beam.rotation.set(-.35, 0, -sx * .45); head.add(beam);
+      for (const [y, a] of [[.12, .9], [.25, .6], [.36, 1.1]]) { const tine = cyl(.012, .006, .17, pale, 4); tine.position.set(sx * (.1 + y * .42), .14 + y * .62, -.05 + y * .1); tine.rotation.set(.5, 0, -sx * a); head.add(tine); }
+    }
+  }
+  const legs = [];
+  for (const [x, z, front] of [[-.13, .36, 1], [.13, .36, 1], [-.13, -.36, 0], [.13, -.36, 0]]) {
+    const hip = new THREE.Group(); hip.position.set(x, .98, z); body.add(hip);
+    const up = cyl(.05, .032, .5, fur); up.position.y = -.25; hip.add(up);
+    const knee = new THREE.Group(); knee.position.y = -.5; hip.add(knee);
+    const low = cyl(.024, .018, .48, fur); low.position.y = -.24; knee.add(low);
+    const hoof = new THREE.Mesh(new THREE.CylinderGeometry(.03, .036, .05, 6), dark); hoof.position.y = -.48; knee.add(hoof);
+    legs.push({ hip, knee, front });
+  }
+  g.scale.setScalar(size);
+  return { g: shade(g), neck, head, legs, tail, body };
+}
+// anda entre pontos, para e pasta, levanta a cabeça quando a câmera chega perto
+function deerLife(d, path, { speed = .7, phase = 0, wait = [3, 7] } = {}){
+  const R = rng(91 + phase * 7); let i = 0, s = 0, pause = 2 + R() * 3, walking = false, step = phase, graze = 1, look = 0;
+  const at = new THREE.Vector3(), seg = () => [path[i % path.length], path[(i + 1) % path.length]];
+  const place = () => { const [a, b] = seg(), L = Math.hypot(b[0] - a[0], b[1] - a[1]), k = Math.min(1, s / L);
+    at.set(lerp(a[0], b[0], k), 0, lerp(a[1], b[1], k)); at.y = height(at.x, at.z);
+    d.g.position.copy(at); const yaw = Math.atan2(b[0] - a[0], b[1] - a[1]); d.g.rotation.y += (yaw - d.g.rotation.y) * .08; return L; };
+  d.g.rotation.y = Math.atan2(path[1][0] - path[0][0], path[1][1] - path[0][1]);
+  place(); scene.add(d.g);
+  return (t, dt, live) => {
+    if (live) {
+      if (walking) { s += speed * dt; step += dt * speed * 5.2; const L = place(); if (s >= L) { s = 0; i++; walking = false; pause = wait[0] + R() * (wait[1] - wait[0]); } }
+      else { pause -= dt; if (pause <= 0) walking = true; }
+    }
+    const near = camera.position.distanceTo(d.g.position);
+    look = lerp(look, near < 26 ? 1 : 0, live ? 1 - Math.exp(-dt * 1.5) : 1);
+    graze = lerp(graze, walking ? .25 : 1 - look, live ? 1 - Math.exp(-dt * 1.8) : 1);
+    d.neck.rotation.x = graze * 1.25 - .1;                           // cabeça baixa = pastando
+    d.head.rotation.x = graze * .35;
+    d.head.rotation.y = look * Math.sin(t * .4 + phase) * .5;
+    d.tail.rotation.z = live ? Math.sin(t * 9 + phase) * .25 * (Math.sin(t * .7 + phase) > .6 ? 1 : 0) : 0;
+    const w = walking && live ? 1 : 0;
+    d.legs.forEach(l => { const p = step + (l.front ? 0 : Math.PI) + (l.hip.position.x > 0 ? Math.PI * .5 : 0);
+      l.hip.rotation.x = Math.sin(p) * .42 * w; l.knee.rotation.x = (l.front ? -1 : 1) * Math.max(0, Math.cos(p)) * .55 * w; });
+    d.body.position.y = w * Math.abs(Math.sin(step)) * .025;
+  };
+}
+// corça e filhote na campina da borda (à direita: a esquerda fica para o texto da abertura)
+{
+  const path = [[6, 79], [10, 77.5], [13, 75.5], [10.5, 74.5], [7, 76]];
+  const doe = makeDeer({ size:1 }), fawn = makeDeer({ size:.62 });
+  animals.push(deerLife(doe, path, { speed:.55, phase:0, wait:[4, 8] }));
+  animals.push(deerLife(fawn, path.map(([x, z]) => [x - 1.6, z + 1.2]), { speed:.6, phase:1.7, wait:[3, 6] }));
+}
+// cervo pastando na outra margem do lago (aparece no fim, ao lado da lua)
+{
+  const stag = makeDeer({ stag:true, size:1.15 });
+  animals.push(deerLife(stag, [[70, -113], [78, -112], [86, -113.5], [78, -114.5]], { speed:.45, phase:3, wait:[6, 11] }));
+}
+
+// coruja num tronco seco ao lado da trilha: vira a cabeça para quem passa e pisca
+{
+  const s0 = S.manifesto + 11, p = trailAt(s0), n = trailAt(s0 + 1).sub(p).normalize();
+  const x = p.x + n.z * 3.4, z = p.z - n.x * 3.4, y = height(x, z);
+  const wood = furMat('#3a2f27'), owl = new THREE.Group();
+  const snag = cyl(.17, .12, 2.1, wood, 8); snag.position.set(x, y + 1.05, z); scene.add(shade(snag));
+  const top = new THREE.Mesh(new THREE.ConeGeometry(.12, .25, 7), wood); top.position.set(x + .03, y + 2.2, z); top.rotation.z = .3; scene.add(top);
+  const feather = furMat('#6d5c4b'), face = furMat('#b8a58b'), eyeM = new THREE.MeshStandardMaterial({ color:'#ffd27a', emissive:'#ffb640', emissiveIntensity:2.4 });
+  const bodyO = new THREE.Mesh(new THREE.SphereGeometry(.17, 14, 12), feather); bodyO.scale.set(1, 1.35, .9); bodyO.position.y = .22; owl.add(bodyO);
+  const headO = new THREE.Group(); headO.position.y = .5; owl.add(headO);
+  const hd = new THREE.Mesh(new THREE.SphereGeometry(.14, 14, 12), feather); hd.scale.set(1.1, .95, 1); headO.add(hd);
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(.12, 16), face); disc.position.z = .118; disc.scale.set(1.15, .9, 1); headO.add(disc);
+  const eyes = [];
+  for (const sx of [-1, 1]) {
+    const e = new THREE.Mesh(new THREE.SphereGeometry(.032, 10, 8), eyeM); e.position.set(sx * .052, .015, .125); headO.add(e); eyes.push(e);
+    const tuft = new THREE.Mesh(new THREE.ConeGeometry(.035, .12, 5), feather); tuft.position.set(sx * .09, .15, 0); tuft.rotation.z = -sx * .35; headO.add(tuft);
+  }
+  const beak = new THREE.Mesh(new THREE.ConeGeometry(.02, .06, 5), furMat('#3a3026')); beak.rotation.x = Math.PI / 2 + .6; beak.position.set(0, -.035, .14); headO.add(beak);
+  owl.position.set(x, y + 2.1, z); scene.add(shade(owl));
+  let yaw = 0, blink = 9;
+  animals.push((t, dt, live) => {
+    const d = camera.position.clone().sub(owl.position), want = Math.atan2(d.x, d.z);
+    const near = d.length() < 40 ? 1 : 0;
+    yaw = lerp(yaw, near ? want : want + .9, live ? 1 - Math.exp(-dt * 2.2) : 1);
+    headO.rotation.y = yaw; bodyO.rotation.y = yaw * .3;
+    headO.rotation.z = live ? Math.sin(t * .8) * .08 : 0;
+    if (live) { blink -= dt; if (blink < 0) blink = 3 + Math.random() * 5; }
+    const b = live && blink < .14 ? .1 : 1; eyes.forEach(e => e.scale.y = b);
+  });
+}
+
+// peixes que pulam no rio, perto da margem da trilha, com onda na água
+{
+  const fishM = new THREE.MeshStandardMaterial({ color:'#9fd6d2', emissive:'#3fb7aa', emissiveIntensity:.5, roughness:.35, metalness:.3 });
+  const fish = new THREE.Group();
+  const fb = new THREE.Mesh(new THREE.SphereGeometry(.12, 10, 8), fishM); fb.scale.set(.45, .6, 1.4); fish.add(fb);
+  const ft = new THREE.Mesh(new THREE.ConeGeometry(.09, .16, 4), fishM); ft.rotation.x = -Math.PI / 2; ft.position.z = -.22; ft.scale.x = .3; fish.add(ft);
+  fish.visible = false; scene.add(fish);
+  let next = 3, jt = -1, from = new THREE.Vector3(), dir = 1;
+  animals.push((t, dt, live) => {
+    if (!live) { fish.visible = false; return; }
+    if (jt < 0) {
+      next -= dt; if (next > 0 || riverFocus(sNow) < .4) return;
+      // nasce na frente da câmera, entre a margem e o meio do rio
+      const ax = camera.position.x + 6 + Math.random() * 12; from.set(ax, WATER_Y, riverZ(ax) + (Math.random() - .3) * 2.2); dir = Math.random() < .5 ? 1 : -1; jt = 0;
+      if (U.uTime.value - lastRip > 1) waterUniforms.uRip.value.set(from.x, from.z, U.uTime.value, 0);
+    }
+    jt += dt / .9;
+    const k = Math.min(1, jt);
+    fish.visible = true;
+    fish.position.set(from.x + dir * k * 1.3, WATER_Y + Math.sin(k * Math.PI) * .75 - .05, from.z);
+    fish.rotation.set(-Math.cos(k * Math.PI) * 1.1, dir > 0 ? Math.PI / 2 : -Math.PI / 2, 0, 'YXZ');
+    if (k >= 1) { jt = -1; next = 2.5 + Math.random() * 4; fish.visible = false;
+      if (U.uTime.value - lastRip > 1) waterUniforms.uRip.value.set(fish.position.x, fish.position.z, U.uTime.value, 0); }
+  });
+}
+
+// coelho ao lado da segunda trilha: pulinhos curtos, para, mexe as orelhas
+{
+  const fur = furMat('#8a7764'), white = furMat('#d9cdbd'), rab = new THREE.Group();
+  const rb = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 10), fur); rb.scale.set(.85, .8, 1.15); rb.position.y = .12; rab.add(rb);
+  const rh = new THREE.Group(); rh.position.set(0, .23, .13); rab.add(rh);
+  rh.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(.075, 10, 8), fur), {}));
+  const ears = [];
+  for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.CapsuleGeometry(.018, .13, 3, 6), fur); e.position.set(sx * .035, .12, -.02); e.rotation.z = -sx * .15; rh.add(e); ears.push(e); }
+  const tl = new THREE.Mesh(new THREE.SphereGeometry(.04, 8, 6), white); tl.position.set(0, .14, -.15); rab.add(tl);
+  rab.scale.setScalar(1.15); scene.add(shade(rab));
+  const sA = S.aboutStart + 4, sB = S.aboutEnd - 4, R = rng(55);
+  const spot = () => { const s = lerp(sA, sB, R()), p = trailAt(s), n = trailAt(s + 1).sub(p).normalize(), off = (R() < .5 ? -1 : 1) * (2 + R() * 2.5);
+    const x = p.x + n.z * off, z = p.z - n.x * off; return new THREE.Vector3(x, height(x, z), z); };
+  let cur = spot(), goal = spot(), hop = -1, rest = 1, hopFrom = cur.clone();
+  const hopTo = new THREE.Vector3();
+  animals.push((t, dt, live) => {
+    if (live) {
+      if (hop < 0) { rest -= dt; if (rest <= 0) {
+        if (cur.distanceTo(goal) < .5) goal = spot();
+        hopFrom.copy(cur); hopTo.copy(goal).sub(cur); const L = Math.min(.7, hopTo.length()); hopTo.setLength(L).add(cur); hopTo.y = height(hopTo.x, hopTo.z); hop = 0;
+        rab.rotation.y = Math.atan2(hopTo.x - cur.x, hopTo.z - cur.z); } }
+      else { hop += dt / .32; const k = Math.min(1, hop); cur.lerpVectors(hopFrom, hopTo, k); cur.y += Math.sin(k * Math.PI) * .22;
+        if (k >= 1) { hop = -1; cur.y = hopTo.y; rest = R() < .25 ? 1.5 + R() * 2.5 : .12 + R() * .2; } }
+    }
+    rab.position.copy(cur);
+    ears.forEach((e, i) => e.rotation.x = live ? Math.max(0, Math.sin(t * 3 + i)) * .3 * (hop < 0 ? 1 : .2) : 0);
+  });
+}
+
+// bando de pássaros cruzando a lua de tempos em tempos
+{
+  const birdM = new THREE.MeshBasicMaterial({ color:'#0b1a22', fog:false, side:THREE.DoubleSide });
+  const wingG = new THREE.BufferGeometry(); wingG.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, .25, 0, 0, -.25, 1.2, 0, -.05], 3));
+  const flock = [];
+  for (let i = 0; i < 7; i++) {
+    const b = new THREE.Group(), l = new THREE.Mesh(wingG, birdM), r = new THREE.Mesh(wingG, birdM); r.scale.x = -1;
+    const bd = new THREE.Mesh(new THREE.SphereGeometry(.22, 6, 4), birdM); bd.scale.set(.6, .5, 1.6); b.add(l, r, bd);
+    b.userData = { l, r, off:new THREE.Vector3((i % 2 ? 1 : -1) * Math.ceil(i / 2) * 2.2, (R0() - .5) * 1.4, -Math.ceil(i / 2) * 2.4), ph:R0() * 6 };
+    b.visible = false; b.renderOrder = -8; scene.add(b); flock.push(b);
+  }
+  const side = new THREE.Vector3(), upv = new THREE.Vector3(), c = new THREE.Vector3();
+  animals.push((t, dt, live) => {
+    const cyc = (t % 34) / 34, on = live && cyc < .42;          // passa por ~14 s a cada 34 s
+    side.crossVectors(MOON_DIR, up).normalize(); upv.crossVectors(side, MOON_DIR).normalize();
+    const k = cyc / .42;
+    c.copy(camera.position).addScaledVector(MOON_DIR, 260).addScaledVector(side, lerp(-150, 150, k)).addScaledVector(upv, Math.sin(k * Math.PI) * 18 - 14);
+    flock.forEach(b => {
+      b.visible = on;
+      if (!on) return;
+      b.position.copy(c).addScaledVector(side, b.userData.off.z * 2.2).addScaledVector(upv, b.userData.off.y * 2 + Math.abs(b.userData.off.x) * .4);
+      b.lookAt(b.position.clone().add(side)); b.scale.setScalar(2.4);
+      const f = Math.sin(t * 9 + b.userData.ph) * .7; b.userData.l.rotation.z = f; b.userData.r.rotation.z = -f;
+    });
+  });
+}
+
 /* ---------------- quadro a quadro ---------------- */
 let needs = true, last = performance.now(), frameAvg = 16, frames = 0, prSteps = 0, ready = false, litCard = null;
 addEventListener('scroll', () => { needs = true; }, { passive:true });
@@ -1057,7 +1266,7 @@ function resize(){
   const v = view(); if (v.w === VW.w && v.h === VW.h) { measure(); return; }
   VW = v;
   camera.aspect = VW.w / VW.h; camera.fov = fovFor(); camera.updateProjectionMatrix();
-  applySize(); bloom.resolution.set(VW.w / 2, VW.h / 2); measure();
+  applySize(); bloom.resolution.set(VW.w / 2, VW.h / 2); composer.passes[1].uniforms.uTexel.value.set(1 / VW.w, 1 / VW.h); measure();
   needs = true; tick(performance.now());          // desenha já: nada de quadro vazio
 }
 new ResizeObserver(resize).observe(canvas);
@@ -1130,6 +1339,8 @@ function tick(now){
     trailItems[i]?.classList.toggle('lit', on === 1);
   });
 
+  // bichos
+  for (const a of animals) a(U.uTime.value, dt, live);
   // vegetação além da névoa não é desenhada
   for (const c of chunks) { const b = c.mesh.boundingSphere; c.mesh.visible = camera.position.distanceTo(b.center) - b.radius < c.far; }
   // resolução adaptativa: se o quadro pesar, reduz a densidade de pixels.

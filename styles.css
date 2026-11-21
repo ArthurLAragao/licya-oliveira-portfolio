@@ -672,3 +672,45 @@ html[data-motion=off] .trail li>*{opacity:1;transform:none}
 .contact .socials a{color:#e6f4f1;text-shadow:0 1px 14px rgba(3,10,16,.85),0 0 2px rgba(3,10,16,.6)}
 .contact .socials a:hover{color:#fff}
 .foot{text-shadow:0 1px 10px rgba(3,10,16,.8);padding-bottom:5.5rem;background:none}   /* espaço para o seletor de versões fixo */
+
+/* ---------------- retrato (Sobre) ----------------
+   Fica entre o título e o texto: a pessoa conhece quem fez depois de ver os trabalhos no rio.
+   Moldura de vidro igual aos painéis, luar na borda e a base escurecendo para a mata. */
+.about-grid{grid-template-columns:minmax(0,.7fr) minmax(0,1fr) minmax(0,.94fr);grid-template-areas:"lead lead trail" "photo text trail";column-gap:clamp(1.6rem,2.8vw,2.8rem)}
+.portrait{grid-area:photo;position:relative;margin:0;border-radius:26px;overflow:hidden;aspect-ratio:4/5;
+  background:#0a1d24;border:1px solid var(--glass-line);
+  box-shadow:0 40px 90px -46px rgba(0,0,0,.95),0 0 0 6px rgba(214,240,238,.04),0 -18px 60px -30px rgba(159,232,224,.35)}
+.portrait picture,.portrait img{display:block;width:100%;height:100%}
+.portrait img{object-fit:cover;object-position:50% 30%;transition:transform 1600ms var(--ease-expo)}
+.portrait::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(159,232,224,.10),transparent 26%,transparent 58%,rgba(4,14,20,.86) 100%);
+  box-shadow:inset 0 1px 0 rgba(233,247,240,.22)}
+.portrait figcaption{position:absolute;z-index:2;left:1.1rem;right:1.1rem;bottom:1rem;display:grid;gap:.15rem;color:#eef8f5}
+.portrait figcaption b{font:400 1.35rem/1.1 var(--serif)}
+.portrait figcaption span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--air)}
+@media (hover:hover){.portrait:hover img{transform:scale(1.035)}}
+.js-motion .portrait.reveal{transform:translateY(26px) scale(.985)}
+.js-motion .portrait.reveal.is-in{transform:none}
+@media (max-width:1100px){
+  .about-grid{grid-template-columns:minmax(0,.8fr) minmax(0,1fr);grid-template-areas:"lead lead" "photo text" "trail trail"}
+}
+@media (max-width:760px){
+  .about-grid{grid-template-columns:1fr;grid-template-areas:"lead" "photo" "text" "trail"}
+  .portrait{max-width:420px;width:100%;justify-self:center}
+}
+html[data-motion=off] .portrait img{transition:none}
+/* com o retrato ao lado, os fatos viram linhas (rótulo à esquerda, valor à direita) */
+.about .facts{grid-template-columns:1fr;gap:.5rem;margin-top:1.6rem}
+.about .facts li{align-items:center;padding:.75rem 1rem}
+.about .facts li>span{flex:1;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.about .facts small{margin:0}
+.about .facts b{text-align:right}
+/* índice da jornada: só os traços na borda (não cobre os painéis); o nome aparece ao passar o mouse ou com foco */
+.rail{right:14px}
+.rail a{flex-direction:row-reverse;justify-content:flex-start}
+.rail a>span{transform:translateX(6px);padding:.3rem .6rem;border-radius:99px;background:rgba(4,13,22,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);white-space:nowrap}
+.rail a[aria-current]>span{opacity:0;transform:translateX(6px)}
+.rail:hover a>span,.rail a:focus-visible>span{opacity:1;transform:none}
+.rail ol{justify-items:end}
+/* seletor de versões (temporário) mais discreto no celular */
+@media (max-width:760px){.versions>span{display:none}.versions{left:.75rem;bottom:.75rem;padding:.2rem}.versions a{min-width:34px;min-height:34px}}

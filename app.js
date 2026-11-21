@@ -138,6 +138,7 @@ const EN = {
   workLead:'Each brand with its own identity. Open a project to see its context, what was done and the material delivered.',
   filterLabel:'Filter projects', fAll:'All', fId:'Identity', fWeb:'Web', fContent:'Content',
   aboutLabel:'About', aboutTitle:'Design meets', aboutTitleEm:'development.',
+  portraitAlt:'Licya Oliveira at night, smiling, with the city lights behind her', portraitCap:'Design & development',
   aboutBig:'I design identities and build websites for businesses. My work often continues into the social posts and everyday materials that bring a brand to life.',
   aboutText:'I’m studying Systems Analysis and Development at Unichristus. Alongside freelance work, I’ve coordinated technical projects, organized content deliveries and supported cloud learning in student communities.',
   expTitle:'Experience', exp1When:'Since 2025', exp1:'Independent projects', exp1Text:'Web, visual identity and social media',
